@@ -1,0 +1,71 @@
+{"Time":"2023-09-09T12:40:35.219089098-07:00","Action":"start","Package":"github.com/prashantv/faket"}
+{"Time":"2023-09-09T12:40:35.220016988-07:00","Action":"run","Package":"github.com/prashantv/faket","Test":"TestCmp_Success"}
+{"Time":"2023-09-09T12:40:35.220039267-07:00","Action":"output","Package":"github.com/prashantv/faket","Test":"TestCmp_Success","Output":"=== RUN   TestCmp_Success\n"}
+{"Time":"2023-09-09T12:40:35.220044185-07:00","Action":"output","Package":"github.com/prashantv/faket","Test":"TestCmp_Success","Output":"    integration_test.go:10: log1\n"}
+{"Time":"2023-09-09T12:40:35.22004599-07:00","Action":"output","Package":"github.com/prashantv/faket","Test":"TestCmp_Success","Output":"    integration_test.go:11: log2\n"}
+{"Time":"2023-09-09T12:40:35.22004889-07:00","Action":"output","Package":"github.com/prashantv/faket","Test":"TestCmp_Success","Output":"--- PASS: TestCmp_Success (0.00s)\n"}
+{"Time":"2023-09-09T12:40:35.220050555-07:00","Action":"pass","Package":"github.com/prashantv/faket","Test":"TestCmp_Success","Elapsed":0}
+{"Time":"2023-09-09T12:40:35.220053106-07:00","Action":"run","Package":"github.com/prashantv/faket","Test":"TestCmp_LogFormatting"}
+{"Time":"2023-09-09T12:40:35.220054503-07:00","Action":"output","Package":"github.com/prashantv/faket","Test":"TestCmp_LogFormatting","Output":"=== RUN   TestCmp_LogFormatting\n"}
+{"Time":"2023-09-09T12:40:35.220057555-07:00","Action":"output","Package":"github.com/prashantv/faket","Test":"TestCmp_LogFormatting","Output":"    integration_test.go:17: a 1 b 2 c d\n"}
+{"Time":"2023-09-09T12:40:35.220059091-07:00","Action":"output","Package":"github.com/prashantv/faket","Test":"TestCmp_LogFormatting","Output":"    integration_test.go:18: a: 1 b: 2\n"}
+{"Time":"2023-09-09T12:40:35.220060804-07:00","Action":"output","Package":"github.com/prashantv/faket","Test":"TestCmp_LogFormatting","Output":"--- PASS: TestCmp_LogFormatting (0.00s)\n"}
+{"Time":"2023-09-09T12:40:35.220062317-07:00","Action":"pass","Package":"github.com/prashantv/faket","Test":"TestCmp_LogFormatting","Elapsed":0}
+{"Time":"2023-09-09T12:40:35.220064504-07:00","Action":"run","Package":"github.com/prashantv/faket","Test":"TestCmp_Skip"}
+{"Time":"2023-09-09T12:40:35.220066058-07:00","Action":"output","Package":"github.com/prashantv/faket","Test":"TestCmp_Skip","Output":"=== RUN   TestCmp_Skip\n"}
+{"Time":"2023-09-09T12:40:35.220067858-07:00","Action":"output","Package":"github.com/prashantv/faket","Test":"TestCmp_Skip","Output":"    integration_test.go:24: pre-skip\n"}
+{"Time":"2023-09-09T12:40:35.220069299-07:00","Action":"output","Package":"github.com/prashantv/faket","Test":"TestCmp_Skip","Output":"    integration_test.go:25: skip\n"}
+{"Time":"2023-09-09T12:40:35.22007133-07:00","Action":"output","Package":"github.com/prashantv/faket","Test":"TestCmp_Skip","Output":"--- SKIP: TestCmp_Skip (0.00s)\n"}
+{"Time":"2023-09-09T12:40:35.220092325-07:00","Action":"skip","Package":"github.com/prashantv/faket","Test":"TestCmp_Skip","Elapsed":0}
+{"Time":"2023-09-09T12:40:35.22009454-07:00","Action":"run","Package":"github.com/prashantv/faket","Test":"TestCmp_Failure"}
+{"Time":"2023-09-09T12:40:35.220096123-07:00","Action":"output","Package":"github.com/prashantv/faket","Test":"TestCmp_Failure","Output":"=== RUN   TestCmp_Failure\n"}
+{"Time":"2023-09-09T12:40:35.220098913-07:00","Action":"output","Package":"github.com/prashantv/faket","Test":"TestCmp_Failure","Output":"    integration_test.go:32: pre-fail log\n"}
+{"Time":"2023-09-09T12:40:35.220101128-07:00","Action":"output","Package":"github.com/prashantv/faket","Test":"TestCmp_Failure","Output":"    integration_test.go:33: error log\n"}
+{"Time":"2023-09-09T12:40:35.220103015-07:00","Action":"output","Package":"github.com/prashantv/faket","Test":"TestCmp_Failure","Output":"    integration_test.go:34: post-fail log\n"}
+{"Time":"2023-09-09T12:40:35.220104739-07:00","Action":"output","Package":"github.com/prashantv/faket","Test":"TestCmp_Failure","Output":"--- FAIL: TestCmp_Failure (0.00s)\n"}
+{"Time":"2023-09-09T12:40:35.220127965-07:00","Action":"fail","Package":"github.com/prashantv/faket","Test":"TestCmp_Failure","Elapsed":0}
+{"Time":"2023-09-09T12:40:35.220136208-07:00","Action":"run","Package":"github.com/prashantv/faket","Test":"TestCmp_FailThenSkipCmp"}
+{"Time":"2023-09-09T12:40:35.220145709-07:00","Action":"output","Package":"github.com/prashantv/faket","Test":"TestCmp_FailThenSkipCmp","Output":"=== RUN   TestCmp_FailThenSkipCmp\n"}
+{"Time":"2023-09-09T12:40:35.220149426-07:00","Action":"output","Package":"github.com/prashantv/faket","Test":"TestCmp_FailThenSkipCmp","Output":"    integration_test.go:48: error\n"}
+{"Time":"2023-09-09T12:40:35.22015107-07:00","Action":"output","Package":"github.com/prashantv/faket","Test":"TestCmp_FailThenSkipCmp","Output":"    integration_test.go:49: skipped\n"}
+{"Time":"2023-09-09T12:40:35.220153378-07:00","Action":"output","Package":"github.com/prashantv/faket","Test":"TestCmp_FailThenSkipCmp","Output":"--- FAIL: TestCmp_FailThenSkipCmp (0.00s)\n"}
+{"Time":"2023-09-09T12:40:35.220154898-07:00","Action":"fail","Package":"github.com/prashantv/faket","Test":"TestCmp_FailThenSkipCmp","Elapsed":0}
+{"Time":"2023-09-09T12:40:35.220157694-07:00","Action":"run","Package":"github.com/prashantv/faket","Test":"TestCmp_SkipThenFail"}
+{"Time":"2023-09-09T12:40:35.220159196-07:00","Action":"output","Package":"github.com/prashantv/faket","Test":"TestCmp_SkipThenFail","Output":"=== RUN   TestCmp_SkipThenFail\n"}
+{"Time":"2023-09-09T12:40:35.220160997-07:00","Action":"output","Package":"github.com/prashantv/faket","Test":"TestCmp_SkipThenFail","Output":"    integration_test.go:55: skip\n"}
+{"Time":"2023-09-09T12:40:35.220162786-07:00","Action":"output","Package":"github.com/prashantv/faket","Test":"TestCmp_SkipThenFail","Output":"--- SKIP: TestCmp_SkipThenFail (0.00s)\n"}
+{"Time":"2023-09-09T12:40:35.220165661-07:00","Action":"skip","Package":"github.com/prashantv/faket","Test":"TestCmp_SkipThenFail","Elapsed":0}
+{"Time":"2023-09-09T12:40:35.220167067-07:00","Action":"run","Package":"github.com/prashantv/faket","Test":"TestCmp_Fatal"}
+{"Time":"2023-09-09T12:40:35.220168437-07:00","Action":"output","Package":"github.com/prashantv/faket","Test":"TestCmp_Fatal","Output":"=== RUN   TestCmp_Fatal\n"}
+{"Time":"2023-09-09T12:40:35.220170272-07:00","Action":"output","Package":"github.com/prashantv/faket","Test":"TestCmp_Fatal","Output":"    integration_test.go:62: pre-fatal\n"}
+{"Time":"2023-09-09T12:40:35.220171968-07:00","Action":"output","Package":"github.com/prashantv/faket","Test":"TestCmp_Fatal","Output":"    integration_test.go:63: fatal\n"}
+{"Time":"2023-09-09T12:40:35.220175913-07:00","Action":"output","Package":"github.com/prashantv/faket","Test":"TestCmp_Fatal","Output":"--- FAIL: TestCmp_Fatal (0.00s)\n"}
+{"Time":"2023-09-09T12:40:35.220199228-07:00","Action":"fail","Package":"github.com/prashantv/faket","Test":"TestCmp_Fatal","Elapsed":0}
+{"Time":"2023-09-09T12:40:35.220202672-07:00","Action":"run","Package":"github.com/prashantv/faket","Test":"TestCmp_Cleanup"}
+{"Time":"2023-09-09T12:40:35.220204436-07:00","Action":"output","Package":"github.com/prashantv/faket","Test":"TestCmp_Cleanup","Output":"=== RUN   TestCmp_Cleanup\n"}
+{"Time":"2023-09-09T12:40:35.220206634-07:00","Action":"output","Package":"github.com/prashantv/faket","Test":"TestCmp_Cleanup","Output":"    integration_test.go:70: log 1\n"}
+{"Time":"2023-09-09T12:40:35.220208294-07:00","Action":"output","Package":"github.com/prashantv/faket","Test":"TestCmp_Cleanup","Output":"    integration_test.go:74: log 2\n"}
+{"Time":"2023-09-09T12:40:35.220210193-07:00","Action":"output","Package":"github.com/prashantv/faket","Test":"TestCmp_Cleanup","Output":"    integration_test.go:72: log in cleanup\n"}
+{"Time":"2023-09-09T12:40:35.220211964-07:00","Action":"output","Package":"github.com/prashantv/faket","Test":"TestCmp_Cleanup","Output":"--- PASS: TestCmp_Cleanup (0.00s)\n"}
+{"Time":"2023-09-09T12:40:35.2202362-07:00","Action":"pass","Package":"github.com/prashantv/faket","Test":"TestCmp_Cleanup","Elapsed":0}
+{"Time":"2023-09-09T12:40:35.220238323-07:00","Action":"run","Package":"github.com/prashantv/faket","Test":"TestCmp_CleanupError"}
+{"Time":"2023-09-09T12:40:35.220242898-07:00","Action":"output","Package":"github.com/prashantv/faket","Test":"TestCmp_CleanupError","Output":"=== RUN   TestCmp_CleanupError\n"}
+{"Time":"2023-09-09T12:40:35.220245143-07:00","Action":"output","Package":"github.com/prashantv/faket","Test":"TestCmp_CleanupError","Output":"    integration_test.go:80: log 1\n"}
+{"Time":"2023-09-09T12:40:35.220247082-07:00","Action":"output","Package":"github.com/prashantv/faket","Test":"TestCmp_CleanupError","Output":"    integration_test.go:84: log 2\n"}
+{"Time":"2023-09-09T12:40:35.220248777-07:00","Action":"output","Package":"github.com/prashantv/faket","Test":"TestCmp_CleanupError","Output":"    integration_test.go:82: error in cleanup\n"}
+{"Time":"2023-09-09T12:40:35.220250489-07:00","Action":"output","Package":"github.com/prashantv/faket","Test":"TestCmp_CleanupError","Output":"--- FAIL: TestCmp_CleanupError (0.00s)\n"}
+{"Time":"2023-09-09T12:40:35.220252976-07:00","Action":"fail","Package":"github.com/prashantv/faket","Test":"TestCmp_CleanupError","Elapsed":0}
+{"Time":"2023-09-09T12:40:35.220254361-07:00","Action":"run","Package":"github.com/prashantv/faket","Test":"TestCmp_CleanupSkip"}
+{"Time":"2023-09-09T12:40:35.220255616-07:00","Action":"output","Package":"github.com/prashantv/faket","Test":"TestCmp_CleanupSkip","Output":"=== RUN   TestCmp_CleanupSkip\n"}
+{"Time":"2023-09-09T12:40:35.220257707-07:00","Action":"output","Package":"github.com/prashantv/faket","Test":"TestCmp_CleanupSkip","Output":"    integration_test.go:90: log 1\n"}
+{"Time":"2023-09-09T12:40:35.220259628-07:00","Action":"output","Package":"github.com/prashantv/faket","Test":"TestCmp_CleanupSkip","Output":"    integration_test.go:102: log 2\n"}
+{"Time":"2023-09-09T12:40:35.220278113-07:00","Action":"output","Package":"github.com/prashantv/faket","Test":"TestCmp_CleanupSkip","Output":"    integration_test.go:100: cleanup 3\n"}
+{"Time":"2023-09-09T12:40:35.220280492-07:00","Action":"output","Package":"github.com/prashantv/faket","Test":"TestCmp_CleanupSkip","Output":"    integration_test.go:95: cleanup 2\n"}
+{"Time":"2023-09-09T12:40:35.220282449-07:00","Action":"output","Package":"github.com/prashantv/faket","Test":"TestCmp_CleanupSkip","Output":"    integration_test.go:96: skip in cleanup\n"}
+{"Time":"2023-09-09T12:40:35.220284657-07:00","Action":"output","Package":"github.com/prashantv/faket","Test":"TestCmp_CleanupSkip","Output":"    integration_test.go:92: cleanup 1\n"}
+{"Time":"2023-09-09T12:40:35.220287013-07:00","Action":"output","Package":"github.com/prashantv/faket","Test":"TestCmp_CleanupSkip","Output":"--- SKIP: TestCmp_CleanupSkip (0.00s)\n"}
+{"Time":"2023-09-09T12:40:35.220308261-07:00","Action":"skip","Package":"github.com/prashantv/faket","Test":"TestCmp_CleanupSkip","Elapsed":0}
+{"Time":"2023-09-09T12:40:35.220310451-07:00","Action":"output","Package":"github.com/prashantv/faket","Output":"FAIL\n"}
+{"Time":"2023-09-09T12:40:35.220435379-07:00","Action":"output","Package":"github.com/prashantv/faket","Output":"exit status 1\n"}
+{"Time":"2023-09-09T12:40:35.220454681-07:00","Action":"output","Package":"github.com/prashantv/faket","Output":"FAIL\tgithub.com/prashantv/faket\t0.001s\n"}
+{"Time":"2023-09-09T12:40:35.220458751-07:00","Action":"fail","Package":"github.com/prashantv/faket","Elapsed":0.001}
