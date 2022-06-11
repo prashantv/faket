@@ -1,0 +1,46 @@
+{"Time":"2022-06-11T01:56:14.9838851-07:00","Action":"run","Package":"github.com/prashantv/faket","Test":"TestSuccess"}
+{"Time":"2022-06-11T01:56:14.9839892-07:00","Action":"output","Package":"github.com/prashantv/faket","Test":"TestSuccess","Output":"=== RUN   TestSuccess\n"}
+{"Time":"2022-06-11T01:56:14.9840089-07:00","Action":"output","Package":"github.com/prashantv/faket","Test":"TestSuccess","Output":"    faket_test.go:100: log1\n"}
+{"Time":"2022-06-11T01:56:14.9840148-07:00","Action":"output","Package":"github.com/prashantv/faket","Test":"TestSuccess","Output":"    faket_test.go:101: log2\n"}
+{"Time":"2022-06-11T01:56:14.9840211-07:00","Action":"output","Package":"github.com/prashantv/faket","Test":"TestSuccess","Output":"--- PASS: TestSuccess (0.00s)\n"}
+{"Time":"2022-06-11T01:56:14.9840267-07:00","Action":"pass","Package":"github.com/prashantv/faket","Test":"TestSuccess","Elapsed":0}
+{"Time":"2022-06-11T01:56:14.9840314-07:00","Action":"run","Package":"github.com/prashantv/faket","Test":"TestSkip"}
+{"Time":"2022-06-11T01:56:14.984035-07:00","Action":"output","Package":"github.com/prashantv/faket","Test":"TestSkip","Output":"=== RUN   TestSkip\n"}
+{"Time":"2022-06-11T01:56:14.9840385-07:00","Action":"output","Package":"github.com/prashantv/faket","Test":"TestSkip","Output":"    faket_test.go:107: pre-skip\n"}
+{"Time":"2022-06-11T01:56:14.9840423-07:00","Action":"output","Package":"github.com/prashantv/faket","Test":"TestSkip","Output":"    faket_test.go:108: skip\n"}
+{"Time":"2022-06-11T01:56:14.9840653-07:00","Action":"output","Package":"github.com/prashantv/faket","Test":"TestSkip","Output":"--- SKIP: TestSkip (0.00s)\n"}
+{"Time":"2022-06-11T01:56:14.9840746-07:00","Action":"skip","Package":"github.com/prashantv/faket","Test":"TestSkip","Elapsed":0}
+{"Time":"2022-06-11T01:56:14.9840793-07:00","Action":"run","Package":"github.com/prashantv/faket","Test":"TestFailure"}
+{"Time":"2022-06-11T01:56:14.9840829-07:00","Action":"output","Package":"github.com/prashantv/faket","Test":"TestFailure","Output":"=== RUN   TestFailure\n"}
+{"Time":"2022-06-11T01:56:14.9840867-07:00","Action":"output","Package":"github.com/prashantv/faket","Test":"TestFailure","Output":"    faket_test.go:115: pre-fail log\n"}
+{"Time":"2022-06-11T01:56:14.9840905-07:00","Action":"output","Package":"github.com/prashantv/faket","Test":"TestFailure","Output":"    faket_test.go:116: error log\n"}
+{"Time":"2022-06-11T01:56:14.9840942-07:00","Action":"output","Package":"github.com/prashantv/faket","Test":"TestFailure","Output":"    faket_test.go:117: post-fail log\n"}
+{"Time":"2022-06-11T01:56:14.9840984-07:00","Action":"output","Package":"github.com/prashantv/faket","Test":"TestFailure","Output":"--- FAIL: TestFailure (0.00s)\n"}
+{"Time":"2022-06-11T01:56:14.9841025-07:00","Action":"fail","Package":"github.com/prashantv/faket","Test":"TestFailure","Elapsed":0}
+{"Time":"2022-06-11T01:56:14.984107-07:00","Action":"run","Package":"github.com/prashantv/faket","Test":"TestPanic"}
+{"Time":"2022-06-11T01:56:14.9841105-07:00","Action":"output","Package":"github.com/prashantv/faket","Test":"TestPanic","Output":"=== RUN   TestPanic\n"}
+{"Time":"2022-06-11T01:56:14.9841156-07:00","Action":"output","Package":"github.com/prashantv/faket","Test":"TestPanic","Output":"--- FAIL: TestPanic (0.00s)\n"}
+{"Time":"2022-06-11T01:56:14.986243-07:00","Action":"output","Package":"github.com/prashantv/faket","Test":"TestPanic","Output":"panic: panic [recovered]\n"}
+{"Time":"2022-06-11T01:56:14.9862727-07:00","Action":"output","Package":"github.com/prashantv/faket","Test":"TestPanic","Output":"\tpanic: panic\n"}
+{"Time":"2022-06-11T01:56:14.9863446-07:00","Action":"output","Package":"github.com/prashantv/faket","Test":"TestPanic","Output":"\n"}
+{"Time":"2022-06-11T01:56:14.986354-07:00","Action":"output","Package":"github.com/prashantv/faket","Test":"TestPanic","Output":"goroutine 9 [running]:\n"}
+{"Time":"2022-06-11T01:56:14.9863598-07:00","Action":"output","Package":"github.com/prashantv/faket","Test":"TestPanic","Output":"testing.tRunner.func1.2({0x59bb20, 0x610d60})\n"}
+{"Time":"2022-06-11T01:56:14.986367-07:00","Action":"output","Package":"github.com/prashantv/faket","Test":"TestPanic","Output":"\t/home/prashant/.gobrew/versions/1.17.5/go/src/testing/testing.go:1209 +0x24e\n"}
+{"Time":"2022-06-11T01:56:14.9863805-07:00","Action":"output","Package":"github.com/prashantv/faket","Test":"TestPanic","Output":"testing.tRunner.func1()\n"}
+{"Time":"2022-06-11T01:56:14.9863868-07:00","Action":"output","Package":"github.com/prashantv/faket","Test":"TestPanic","Output":"\t/home/prashant/.gobrew/versions/1.17.5/go/src/testing/testing.go:1212 +0x218\n"}
+{"Time":"2022-06-11T01:56:14.9863933-07:00","Action":"output","Package":"github.com/prashantv/faket","Test":"TestPanic","Output":"panic({0x59bb20, 0x610d60})\n"}
+{"Time":"2022-06-11T01:56:14.9864717-07:00","Action":"output","Package":"github.com/prashantv/faket","Test":"TestPanic","Output":"\t/home/prashant/.gobrew/versions/1.17.5/go/src/runtime/panic.go:1038 +0x215\n"}
+{"Time":"2022-06-11T01:56:14.9864805-07:00","Action":"output","Package":"github.com/prashantv/faket","Test":"TestPanic","Output":"github.com/prashantv/faket.TestPanic.func1({0x5d36ef, 0xf})\n"}
+{"Time":"2022-06-11T01:56:14.9864878-07:00","Action":"output","Package":"github.com/prashantv/faket","Test":"TestPanic","Output":"\t/home/prashant/go/src/github.com/prashantv/faket/faket_test.go:123 +0x27\n"}
+{"Time":"2022-06-11T01:56:14.9864919-07:00","Action":"output","Package":"github.com/prashantv/faket","Test":"TestPanic","Output":"github.com/prashantv/faket.testWrapper(0xc00011f860, 0x5e48e8)\n"}
+{"Time":"2022-06-11T01:56:14.9864956-07:00","Action":"output","Package":"github.com/prashantv/faket","Test":"TestPanic","Output":"\t/home/prashant/go/src/github.com/prashantv/faket/faket_test.go:48 +0xd1\n"}
+{"Time":"2022-06-11T01:56:14.9865007-07:00","Action":"output","Package":"github.com/prashantv/faket","Test":"TestPanic","Output":"github.com/prashantv/faket.TestPanic(0x0)\n"}
+{"Time":"2022-06-11T01:56:14.9865043-07:00","Action":"output","Package":"github.com/prashantv/faket","Test":"TestPanic","Output":"\t/home/prashant/go/src/github.com/prashantv/faket/faket_test.go:122 +0x25\n"}
+{"Time":"2022-06-11T01:56:14.986508-07:00","Action":"output","Package":"github.com/prashantv/faket","Test":"TestPanic","Output":"testing.tRunner(0xc00011f860, 0x5e48f0)\n"}
+{"Time":"2022-06-11T01:56:14.9865128-07:00","Action":"output","Package":"github.com/prashantv/faket","Test":"TestPanic","Output":"\t/home/prashant/.gobrew/versions/1.17.5/go/src/testing/testing.go:1259 +0x102\n"}
+{"Time":"2022-06-11T01:56:14.9865165-07:00","Action":"output","Package":"github.com/prashantv/faket","Test":"TestPanic","Output":"created by testing.(*T).Run\n"}
+{"Time":"2022-06-11T01:56:14.9865201-07:00","Action":"output","Package":"github.com/prashantv/faket","Test":"TestPanic","Output":"\t/home/prashant/.gobrew/versions/1.17.5/go/src/testing/testing.go:1306 +0x35a\n"}
+{"Time":"2022-06-11T01:56:14.9866667-07:00","Action":"output","Package":"github.com/prashantv/faket","Test":"TestPanic","Output":"exit status 2\n"}
+{"Time":"2022-06-11T01:56:14.9867011-07:00","Action":"fail","Package":"github.com/prashantv/faket","Test":"TestPanic","Elapsed":0}
+{"Time":"2022-06-11T01:56:14.9867104-07:00","Action":"output","Package":"github.com/prashantv/faket","Output":"FAIL\tgithub.com/prashantv/faket\t0.004s\n"}
+{"Time":"2022-06-11T01:56:14.9867167-07:00","Action":"fail","Package":"github.com/prashantv/faket","Elapsed":0.004}
