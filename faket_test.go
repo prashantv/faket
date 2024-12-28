@@ -1,18 +1,13 @@
 package faket
 
-import (
-	"testing"
-
-	"github.com/stretchr/testify/assert"
-)
+import "testing"
 
 func TestFakeT_Success(t *testing.T) {
 	res := RunTest(func(t testing.TB) {
 		t.Log("this", "is", "log", 1)
 	})
-	assert.False(t, res.Failed())
-	assert.False(t, res.Skipped())
+	wantEqual(t, "Failed", res.Failed(), false)
+	wantEqual(t, "Skipped", res.Skipped(), false)
 
-	want := "this is log 1"
-	assert.Equal(t, want, res.Logs())
+	wantEqual(t, "Logs", res.Logs(), "this is log 1")
 }

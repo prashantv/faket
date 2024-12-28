@@ -10,8 +10,6 @@ import (
 	"strings"
 	"testing"
 	"time"
-
-	"github.com/stretchr/testify/assert"
 )
 
 // TestEvent matches https://pkg.go.dev/cmd/test2json#hdr-Output_Format
@@ -68,16 +66,16 @@ func compareTest(t *testing.T, f func(testing.TB)) {
 			// Events that don't need any processing
 			// Started running a specific test.
 		case "pass":
-			assert.False(t, res.Failed(), "pass test got Failed")
-			assert.False(t, res.Skipped(), "pass test got Skipped")
+			wantEqual(t, "pass test Failed", res.Failed(), false)
+			wantEqual(t, "pass test Skipped", res.Skipped(), false)
 			resultEvent = true
 		case "fail":
-			assert.True(t, res.Failed(), "expect Failed for failing test")
-			assert.False(t, res.Skipped(), "unexpected Skipped for failing test")
+			wantEqual(t, "fail test Failed", res.Failed(), true)
+			wantEqual(t, "fail test Skipped", res.Skipped(), false)
 			resultEvent = true
 		case "skip":
-			assert.False(t, res.Failed(), "skip test got Failed")
-			assert.True(t, res.Skipped(), "expect skip test")
+			wantEqual(t, "skip test Failed", res.Failed(), false)
+			wantEqual(t, "skip test Skipped", res.Skipped(), true)
 			resultEvent = true
 		case "output":
 			// Only space prefixed lines are t.Log output
@@ -86,10 +84,9 @@ func compareTest(t *testing.T, f func(testing.TB)) {
 			}
 		default:
 			t.Fatal("unknown action", ev.Action)
-
 		}
 	}
 
-	assert.True(t, resultEvent, "Result event missing")
-	assert.Equal(t, wantOutput, res.testingLogOutput())
+	wantEqual(t, "result event", resultEvent, true)
+	wantDeepEqual(t, "log output", res.testingLogOutput(), wantOutput)
 }
