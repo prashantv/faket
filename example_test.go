@@ -36,35 +36,15 @@ func ExampleFail() {
 }
 
 func TestStrContainsInOrder(t *testing.T) {
-	const str = "test helper validation"
-	tests := []struct {
-		name string
-		strs []string
-		fail bool
-	}{
-		{
-			name: "substring",
-			strs: []string{"helper"},
-		},
-		{
-			name: "substrings in order",
-			strs: []string{"test", "helper", "validation"},
-		},
-		{
-			name: "substrings in wrong order",
-			strs: []string{"test", "validation", "helper"}, // wrong order
-			fail: true,
-		},
-	}
+	t.Run("correct order", func(t *testing.T) {
+		faket.RunTest(func(t testing.TB) {
+			StrContainsInOrder(t, "test helper function", "test", "helper")
+		}).MustPass(t)
+	})
 
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			res := faket.RunTest(func(t testing.TB) {
-				StrContainsInOrder(t, str, tt.strs...)
-			})
-			if res.Failed() != tt.fail {
-				t.Errorf("Failed: got %v, want %v", res.Failed(), tt.fail)
-			}
-		})
-	}
+	t.Run("incorrect order", func(t *testing.T) {
+		faket.RunTest(func(t testing.TB) {
+			StrContainsInOrder(t, "test helper function", "helper", "test")
+		}).MustFail(t, `failed to find "test" in remaining string " function"`)
+	})
 }

@@ -35,21 +35,15 @@ func StrContainsInOrder(t testing.TB, got string, contains ...string)
 ```go
 func TestStrContainsInOrder(t *testing.T) {
   t.Run("correct order", func(t *testing.T) {
-    res := faket.RunTest(func(t testing.TB) {
+    faket.RunTest(func(t testing.TB) {
       StrContainsInOrder(t, "test helper function", "test", "helper")
-    })
-    if res.Failed() {
-      t.Fatalf("unexpected failure, logs:\n%v", res.Logs())
-    }
+    }).MustPass(t)
   })
 
   t.Run("incorrect order", func(t *testing.T) {
-    res := faket.RunTest(func(t testing.TB) {
-      StrContainsInOrder(t, "test helper function", "validation", "helper")
-    })
-    if !res.Failed() {
-      t.Fatalf("expected failure")
-    }
+    faket.RunTest(func(t testing.TB) {
+      StrContainsInOrder(t, "test helper function", "helper", "test")
+    }).MustFail(t, `failed to find "test" in remaining string " function"`)
   })
 }
 ```
