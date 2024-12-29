@@ -1,4 +1,5 @@
-package faket
+// Package cmptest is used to compare faket against go test.
+package cmptest
 
 import (
 	"bytes"
@@ -11,6 +12,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/prashantv/faket"
 	"github.com/prashantv/faket/internal/want"
 )
 
@@ -46,7 +48,9 @@ func mustReadTestEvents(file string) map[string][]TestEvent {
 	return events
 }
 
-func compareTest(t *testing.T, f func(testing.TB)) {
+// Compare compares the result of running the given test function
+// using `faket.RunTest` against `go test`.
+func Compare(t *testing.T, f func(testing.TB)) {
 	// Verify the name, since the Makefile uses this to only run Cmp tests when generating the test data.
 	if !strings.HasPrefix(t.Name(), "TestCmp_") {
 		t.Fatalf("test %v is a Cmp test, and should be named TestCmp_*", t.Name())
@@ -57,7 +61,7 @@ func compareTest(t *testing.T, f func(testing.TB)) {
 		return
 	}
 
-	res := RunTest(f)
+	res := faket.RunTest(f)
 
 	var wantOutput []string
 	realTestEvents := testEvents[t.Name()]
@@ -90,5 +94,5 @@ func compareTest(t *testing.T, f func(testing.TB)) {
 	}
 
 	want.Equal(t, "result event", resultEvent, true)
-	want.DeepEqual(t, "log output", res.testingLogOutput(), wantOutput)
+	want.DeepEqual(t, "log output", res.LogsWithCaller(), wantOutput)
 }

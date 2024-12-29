@@ -47,7 +47,9 @@ func (r TestResult) Logs() string {
 	return strings.Join(r.LogsList(), "\n")
 }
 
-func (r TestResult) testingLogOutput() []string {
+// LogsWithCaller returns the log output of the test with caller information
+// similar to the output of `go test`.
+func (r TestResult) LogsWithCaller() []string {
 	logs := make([]string, 0, len(r.res.Logs))
 	for _, l := range r.res.Logs {
 		line := fmt.Sprintf("%v: %v", getFileLine(l.callers), l.entry)
