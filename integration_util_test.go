@@ -10,6 +10,8 @@ import (
 	"strings"
 	"testing"
 	"time"
+
+	"github.com/prashantv/faket/internal/want"
 )
 
 // TestEvent matches https://pkg.go.dev/cmd/test2json#hdr-Output_Format
@@ -66,16 +68,16 @@ func compareTest(t *testing.T, f func(testing.TB)) {
 			// Events that don't need any processing
 			// Started running a specific test.
 		case "pass":
-			wantEqual(t, "pass test Failed", res.Failed(), false)
-			wantEqual(t, "pass test Skipped", res.Skipped(), false)
+			want.Equal(t, "pass test Failed", res.Failed(), false)
+			want.Equal(t, "pass test Skipped", res.Skipped(), false)
 			resultEvent = true
 		case "fail":
-			wantEqual(t, "fail test Failed", res.Failed(), true)
-			wantEqual(t, "fail test Skipped", res.Skipped(), false)
+			want.Equal(t, "fail test Failed", res.Failed(), true)
+			want.Equal(t, "fail test Skipped", res.Skipped(), false)
 			resultEvent = true
 		case "skip":
-			wantEqual(t, "skip test Failed", res.Failed(), false)
-			wantEqual(t, "skip test Skipped", res.Skipped(), true)
+			want.Equal(t, "skip test Failed", res.Failed(), false)
+			want.Equal(t, "skip test Skipped", res.Skipped(), true)
 			resultEvent = true
 		case "output":
 			// Only space prefixed lines are t.Log output
@@ -87,6 +89,6 @@ func compareTest(t *testing.T, f func(testing.TB)) {
 		}
 	}
 
-	wantEqual(t, "result event", resultEvent, true)
-	wantDeepEqual(t, "log output", res.testingLogOutput(), wantOutput)
+	want.Equal(t, "result event", resultEvent, true)
+	want.DeepEqual(t, "log output", res.testingLogOutput(), wantOutput)
 }
