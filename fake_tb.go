@@ -9,13 +9,6 @@ import (
 	"testing"
 )
 
-type expectedPanic string
-
-const (
-	panicFatal expectedPanic = "fatal"
-	panicSkip  expectedPanic = "skip"
-)
-
 var _ testing.TB = (*fakeTB)(nil)
 
 type fakeTB struct {
@@ -31,6 +24,11 @@ type fakeTB struct {
 	completed chan struct{}
 	failed    bool
 	skipped   bool
+	panicked  bool
+
+	// panic metadata
+	recovered      any
+	recoverCallers []uintptr
 }
 
 type logEntry struct {
@@ -44,6 +42,7 @@ func RunTest(testFn func(t testing.TB)) TestResult {
 	tb := newRecordingTB()
 
 	go func() {
+		defer tb.checkPanic()
 		defer tb.postTest()
 
 		testFn(tb)
@@ -59,14 +58,16 @@ func newRecordingTB() *fakeTB {
 	}
 }
 
+func (tb *fakeTB) checkPanic() {
+	if r := recover(); r != nil {
+		tb.panicked = true
+		tb.recovered = r
+		tb.recoverCallers = getCallers()
+	}
+}
+
 func (tb *fakeTB) postTest() {
 	defer close(tb.completed)
-
-	defer func() {
-		if r := recover(); r != nil {
-			panic(r)
-		}
-	}()
 
 	for _, f := range tb.cleanups {
 		defer f()
@@ -166,7 +167,7 @@ func (tb *fakeTB) Failed() bool {
 	tb.mu.Lock()
 	defer tb.mu.Unlock()
 
-	return tb.failed
+	return tb.failed || tb.panicked
 }
 
 func (tb *fakeTB) Fatal(args ...interface{}) {

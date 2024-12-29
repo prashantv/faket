@@ -58,6 +58,16 @@ func mustReadTestEvents(file string) map[string][]TestEvent {
 // Compare compares the result of running the given test function
 // using `faket.RunTest` against `go test`.
 func Compare(t *testing.T, f func(testing.TB)) {
+	CompareOpts(t, Opts{}, f)
+}
+
+// Opts are options for comparing faket to a real test run.
+type Opts struct {
+	WantPanic bool
+}
+
+// CompareOpts is the same as Compare, but supports options for customizing comparisons.
+func CompareOpts(t *testing.T, opts Opts, f func(t testing.TB)) {
 	// Verify the name, since the Makefile uses this to only run Cmp tests when generating the test data.
 	if !strings.HasPrefix(t.Name(), "TestCmp_") {
 		t.Fatalf("test %v is a Cmp test, and should be named TestCmp_*", t.Name())
@@ -102,4 +112,5 @@ func Compare(t *testing.T, f func(testing.TB)) {
 
 	want.Equal(t, "result event", resultEvent, true)
 	want.DeepEqual(t, "log output", res.LogsWithCaller(), wantOutput)
+	want.Equal(t, "panicked", res.Panicked(), opts.WantPanic)
 }

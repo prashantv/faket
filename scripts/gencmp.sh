@@ -9,5 +9,9 @@ RUN_ACTUAL_TEST=1 go test -v -trimpath -run TestCmp_ -json |
 	perl -pe 's/[0-9]+\.[0-9]+s/0.01s/g' |
 	perl -pe 's/"Elapsed":[0-9]+\.[0-9]+/"Elapsed":1.00/' |
 
+	# Replace pointers & goroutine IDs 
+	perl -pe 's/0x[0-9a-fA-F]+/0x0000/g' |
+	perl -pe 's/goroutine [0-9]+/goroutine 1/g' |
+
 	# dummy cat for consistently terminating above commands with |
 	cat

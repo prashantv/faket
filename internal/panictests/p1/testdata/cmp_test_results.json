@@ -1,0 +1,30 @@
+{"Time":"2022-06-11T00:00:00.0Z","Action":"start","Package":"github.com/prashantv/faket/internal/panictests/p1"}
+{"Time":"2022-06-11T00:00:00.0Z","Action":"run","Package":"github.com/prashantv/faket/internal/panictests/p1","Test":"TestCmp_Panic"}
+{"Time":"2022-06-11T00:00:00.0Z","Action":"output","Package":"github.com/prashantv/faket/internal/panictests/p1","Test":"TestCmp_Panic","Output":"=== RUN   TestCmp_Panic\n"}
+{"Time":"2022-06-11T00:00:00.0Z","Action":"output","Package":"github.com/prashantv/faket/internal/panictests/p1","Test":"TestCmp_Panic","Output":"    panic_1_test.go:13: normal log\n"}
+{"Time":"2022-06-11T00:00:00.0Z","Action":"output","Package":"github.com/prashantv/faket/internal/panictests/p1","Test":"TestCmp_Panic","Output":"    panic_1_test.go:15: defer log\n"}
+{"Time":"2022-06-11T00:00:00.0Z","Action":"output","Package":"github.com/prashantv/faket/internal/panictests/p1","Test":"TestCmp_Panic","Output":"--- FAIL: TestCmp_Panic (0.01s)\n"}
+{"Time":"2022-06-11T00:00:00.0Z","Action":"output","Package":"github.com/prashantv/faket/internal/panictests/p1","Test":"TestCmp_Panic","Output":"panic: fatal [recovered]\n"}
+{"Time":"2022-06-11T00:00:00.0Z","Action":"output","Package":"github.com/prashantv/faket/internal/panictests/p1","Test":"TestCmp_Panic","Output":"\tpanic: fatal\n"}
+{"Time":"2022-06-11T00:00:00.0Z","Action":"output","Package":"github.com/prashantv/faket/internal/panictests/p1","Test":"TestCmp_Panic","Output":"\n"}
+{"Time":"2022-06-11T00:00:00.0Z","Action":"output","Package":"github.com/prashantv/faket/internal/panictests/p1","Test":"TestCmp_Panic","Output":"goroutine 1 [running]:\n"}
+{"Time":"2022-06-11T00:00:00.0Z","Action":"output","Package":"github.com/prashantv/faket/internal/panictests/p1","Test":"TestCmp_Panic","Output":"testing.tRunner.func1.2({0x0000, 0x0000})\n"}
+{"Time":"2022-06-11T00:00:00.0Z","Action":"output","Package":"github.com/prashantv/faket/internal/panictests/p1","Test":"TestCmp_Panic","Output":"\ttesting/testing.go:1632 +0x0000\n"}
+{"Time":"2022-06-11T00:00:00.0Z","Action":"output","Package":"github.com/prashantv/faket/internal/panictests/p1","Test":"TestCmp_Panic","Output":"testing.tRunner.func1()\n"}
+{"Time":"2022-06-11T00:00:00.0Z","Action":"output","Package":"github.com/prashantv/faket/internal/panictests/p1","Test":"TestCmp_Panic","Output":"\ttesting/testing.go:1635 +0x0000\n"}
+{"Time":"2022-06-11T00:00:00.0Z","Action":"output","Package":"github.com/prashantv/faket/internal/panictests/p1","Test":"TestCmp_Panic","Output":"panic({0x0000?, 0x0000?})\n"}
+{"Time":"2022-06-11T00:00:00.0Z","Action":"output","Package":"github.com/prashantv/faket/internal/panictests/p1","Test":"TestCmp_Panic","Output":"\truntime/panic.go:785 +0x0000\n"}
+{"Time":"2022-06-11T00:00:00.0Z","Action":"output","Package":"github.com/prashantv/faket/internal/panictests/p1","Test":"TestCmp_Panic","Output":"github.com/prashantv/faket/internal/panictests/p1.TestCmp_Panic.func1({0x0000, 0x0000})\n"}
+{"Time":"2022-06-11T00:00:00.0Z","Action":"output","Package":"github.com/prashantv/faket/internal/panictests/p1","Test":"TestCmp_Panic","Output":"\tgithub.com/prashantv/faket/internal/panictests/p1/panic_1_test.go:15 +0x0000\n"}
+{"Time":"2022-06-11T00:00:00.0Z","Action":"output","Package":"github.com/prashantv/faket/internal/panictests/p1","Test":"TestCmp_Panic","Output":"github.com/prashantv/faket/internal/cmptest.CompareOpts(0x0000, {0x0000?}, 0x0000?)\n"}
+{"Time":"2022-06-11T00:00:00.0Z","Action":"output","Package":"github.com/prashantv/faket/internal/panictests/p1","Test":"TestCmp_Panic","Output":"\tgithub.com/prashantv/faket/internal/cmptest/cmptest.go:77 +0x0000\n"}
+{"Time":"2022-06-11T00:00:00.0Z","Action":"output","Package":"github.com/prashantv/faket/internal/panictests/p1","Test":"TestCmp_Panic","Output":"github.com/prashantv/faket/internal/panictests/p1.TestCmp_Panic(0x0000?)\n"}
+{"Time":"2022-06-11T00:00:00.0Z","Action":"output","Package":"github.com/prashantv/faket/internal/panictests/p1","Test":"TestCmp_Panic","Output":"\tgithub.com/prashantv/faket/internal/panictests/p1/panic_1_test.go:11 +0x0000\n"}
+{"Time":"2022-06-11T00:00:00.0Z","Action":"output","Package":"github.com/prashantv/faket/internal/panictests/p1","Test":"TestCmp_Panic","Output":"testing.tRunner(0x0000, 0x0000)\n"}
+{"Time":"2022-06-11T00:00:00.0Z","Action":"output","Package":"github.com/prashantv/faket/internal/panictests/p1","Test":"TestCmp_Panic","Output":"\ttesting/testing.go:1690 +0x0000\n"}
+{"Time":"2022-06-11T00:00:00.0Z","Action":"output","Package":"github.com/prashantv/faket/internal/panictests/p1","Test":"TestCmp_Panic","Output":"created by testing.(*T).Run in goroutine 1\n"}
+{"Time":"2022-06-11T00:00:00.0Z","Action":"output","Package":"github.com/prashantv/faket/internal/panictests/p1","Test":"TestCmp_Panic","Output":"\ttesting/testing.go:1743 +0x0000\n"}
+{"Time":"2022-06-11T00:00:00.0Z","Action":"output","Package":"github.com/prashantv/faket/internal/panictests/p1","Test":"TestCmp_Panic","Output":"exit status 2\n"}
+{"Time":"2022-06-11T00:00:00.0Z","Action":"fail","Package":"github.com/prashantv/faket/internal/panictests/p1","Test":"TestCmp_Panic","Elapsed":0}
+{"Time":"2022-06-11T00:00:00.0Z","Action":"output","Package":"github.com/prashantv/faket/internal/panictests/p1","Output":"FAIL\tgithub.com/prashantv/faket/internal/panictests/p1\t0.01s\n"}
+{"Time":"2022-06-11T00:00:00.0Z","Action":"fail","Package":"github.com/prashantv/faket/internal/panictests/p1","Elapsed":1.00}

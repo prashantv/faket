@@ -34,6 +34,10 @@ func (r TestResult) Failed() bool {
 	return r.res.Failed()
 }
 
+func (r TestResult) Panicked() bool {
+	return r.res.panicked
+}
+
 // LogsList returns a list of logs
 func (r TestResult) LogsList() []string {
 	logs := make([]string, 0, len(r.res.Logs))
@@ -81,10 +85,17 @@ func getCallerInfo(callers []uintptr) callerInfo {
 		logFn: f.Function,
 	}
 
-	// TODO: Skip t.Helper() frames.
-	f, _ = frames.Next()
-	if f == (runtime.Frame{}) {
-		return ci
+	skip := true
+	for skip {
+		// TODO: Skip t.Helper() frames.
+		f, _ = frames.Next()
+		if f == (runtime.Frame{}) {
+			return ci
+		}
+
+		// When a defer is triggered by a panic, it's added to the trace
+		// but panic is not shown as a log caller.
+		skip = f.Function == "runtime.gopanic"
 	}
 
 	ci.callerFile = f.File
