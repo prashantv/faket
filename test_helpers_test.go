@@ -2,6 +2,8 @@ package faket
 
 import (
 	"testing"
+
+	"github.com/prashantv/faket/internal/want"
 )
 
 func TestMustPass(t *testing.T) {
@@ -18,14 +20,14 @@ func TestMustPass(t *testing.T) {
 		tr := RunTest(func(t testing.TB) {
 			failTR.MustPass(t)
 		})
-		wantEqual(t, "Failed", tr.Failed(), true)
+		want.Equal(t, "Failed", tr.Failed(), true)
 	})
 
 	t.Run("MustFail on passing test", func(t *testing.T) {
 		tr := RunTest(func(t testing.TB) {
 			passTR.MustFail(t, "failed")
 		})
-		wantEqual(t, "Failed", tr.Failed(), true)
+		want.Equal(t, "Failed", tr.Failed(), true)
 	})
 
 	t.Run("MustFail on failed test", func(t *testing.T) {
@@ -36,6 +38,6 @@ func TestMustPass(t *testing.T) {
 		tr := RunTest(func(t testing.TB) {
 			failTR.MustFail(t, "incorrect message")
 		})
-		wantEqual(t, "Failed", tr.Failed(), true)
+		want.Equal(t, "Failed", tr.Failed(), true)
 	})
 }
