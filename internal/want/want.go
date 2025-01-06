@@ -35,5 +35,5 @@ func DeepEqual[T any](t testing.TB, msg string, got, want T) {
 		return
 	}
 
-	t.Fatalf("%s: expected DeepEqual\ngot:  %v\nwant: %v", msg, want, got)
+	t.Fatalf("%s: expected DeepEqual\ngot:  %v\nwant: %v", msg, got, want)
 }
