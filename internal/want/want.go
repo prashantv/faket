@@ -24,7 +24,7 @@ func Equal[T comparable](t testing.TB, msg string, got, want T) {
 		return
 	}
 
-	t.Fatalf("%s: expected equal\ngot:  %v\nwant: %v", msg, want, got)
+	t.Fatalf("%s: expected equal\ngot:  %v\nwant: %v", msg, got, want)
 }
 
 // DeepEqual assers that the given got/want are equal using reflect.DeepEqual.
