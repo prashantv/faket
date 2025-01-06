@@ -7,6 +7,8 @@ import (
 	"strings"
 )
 
+const pkg = "github.com/prashantv/faket"
+
 // TestResult is the result of runnming a test against a fake [testing.TB].
 type TestResult struct {
 	res *fakeTB
@@ -52,18 +54,40 @@ func (r TestResult) Logs() string {
 func (r TestResult) LogsWithCaller() []string {
 	logs := make([]string, 0, len(r.res.Logs))
 	for _, l := range r.res.Logs {
-		line := fmt.Sprintf("%v: %v", getFileLine(l.callers), l.entry)
+		ci := getCallerInfo(l.callers)
+		line := fmt.Sprintf("%s:%d: %v", filepath.Base(ci.callerFile), ci.callerLine, l.entry)
 		logs = append(logs, line)
 	}
 	return logs
 }
 
-func getFileLine(callers []uintptr) string {
+type callerInfo struct {
+	logFn string
+
+	callerFile string
+	callerLine int
+}
+
+func getCallerInfo(callers []uintptr) callerInfo {
 	frames := runtime.CallersFrames(callers)
+
 	f, _ := frames.Next()
 	if f == (runtime.Frame{}) {
-		return ""
+		return callerInfo{}
 	}
 
-	return fmt.Sprintf("%v:%v", filepath.Base(f.File), f.Line)
+	// First frame is the fake_tb caller.
+	ci := callerInfo{
+		logFn: f.Function,
+	}
+
+	// TODO: Skip t.Helper() frames.
+	f, _ = frames.Next()
+	if f == (runtime.Frame{}) {
+		return ci
+	}
+
+	ci.callerFile = f.File
+	ci.callerLine = f.Line
+	return ci
 }
