@@ -1,8 +1,21 @@
+# Find DIR/testdata/cmp_test_results.json files, and map to ./DIR
+CMP_TEST_DIRS := $(shell \
+	git ls-files '**/cmp_test_results.json' | \
+	sed -e 's|^|./|' -e 's|testdata/cmp_test_results.json||' \
+)
 
+# Note(prashant): Helpful alias since I can never remember `-B`
+.PHONY: force-update-testdata
+force-update-testdata:
+	make -B update-testdata
 
+# cmp_rule will append actions to this rule.
 .PHONY: update-testdata
-update-testdata:
-	-RUN_ACTUAL_TEST=1 go test -v -run TestCmp_ -json > testdata/cmp_test_results.json
-	-perl -i -pe 's/"Time":".*?"/"Time":"2022-06-11T00:00:00.0Z"/' testdata/cmp_test_results.json
-	-perl -i -pe 's/[0-9]+\.[0-9]+s/0.01s/g' testdata/cmp_test_results.json
-	-perl -i -pe 's/"Elapsed":[0-9]+\.[0-9]+/"Elapsed":1.00/' testdata/cmp_test_results.json
+update-testdata::
+
+define cmp_rule
+update-testdata:: $1/testdata/cmp_test_results.json
+$1/testdata/cmp_test_results.json: $$(wildcard $1/*_test.go) $$(wildcard ./internal/cmptest/*.go)
+	./scripts/gencmp.sh "$1" > "$$@"
+endef
+$(foreach d,$(CMP_TEST_DIRS),$(eval $(call cmp_rule,$d)))
