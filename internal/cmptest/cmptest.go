@@ -26,9 +26,16 @@ type TestEvent struct {
 	Output  string
 }
 
-var testEvents = mustReadTestEvents("cmp_test_results.json")
+var (
+	runActual  = os.Getenv("RUN_ACTUAL_TEST") != ""
+	testEvents = mustReadTestEvents("cmp_test_results.json")
+)
 
 func mustReadTestEvents(file string) map[string][]TestEvent {
+	if runActual {
+		return nil
+	}
+
 	resultsJSON, err := os.ReadFile(filepath.Join("testdata", file))
 	if err != nil {
 		panic(fmt.Errorf("failed to read test results: %v", err))
@@ -56,7 +63,7 @@ func Compare(t *testing.T, f func(testing.TB)) {
 		t.Fatalf("test %v is a Cmp test, and should be named TestCmp_*", t.Name())
 	}
 
-	if os.Getenv("RUN_ACTUAL_TEST") != "" {
+	if runActual {
 		f(t)
 		return
 	}

@@ -33,3 +33,6 @@ jobs:
 
     - name: Test
       run: go test -v ./...
+
+    - name: Verify golden files
+      run: make diff-testdata
