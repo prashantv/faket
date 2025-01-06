@@ -34,8 +34,7 @@ type fakeTB struct {
 }
 
 type logEntry struct {
-	logFunc string
-	callers []uintptr
+	callers []uintptr // callers[0] is the tb function that logged
 	entry   string
 }
 
@@ -101,27 +100,22 @@ func (tb *fakeTB) Cleanup(f func()) {
 	tb.cleanups = append(tb.cleanups, f)
 }
 
-func (tb *fakeTB) logfLocked(logFunc string, format string, args ...interface{}) {
-	tb.logLocked(logFunc, fmt.Sprintf(format, args...))
+func (tb *fakeTB) logfLocked(callers []uintptr, format string, args ...interface{}) {
+	formatted := fmt.Sprintf(format, args...)
+	tb.Logs = append(tb.Logs, logEntry{
+		callers: callers,
+		entry:   formatted,
+	})
 }
 
-func (tb *fakeTB) logLocked(logFunc string, args ...interface{}) {
+func (tb *fakeTB) logLocked(callers []uintptr, args ...interface{}) {
 	// Log args are formatted using Sprintln in the testing package
 	// but we drop the trailing newline as we store an array of lines.
 	formatted := fmt.Sprintln(args...)
 	formatted = strings.TrimSuffix(formatted, "\n")
 
-	// Callers are expected to pass how many frames (including themselves) they should skip.
-	// We then add 2 to skip this function and getCallers.
-	skip := 1
-	if strings.HasSuffix(logFunc, "f") {
-		skip++
-	}
-	callers := getCallers(skip)
-
 	tb.Logs = append(tb.Logs, logEntry{
-		logFunc: logFunc,
-		callers: callers[1:],
+		callers: callers,
 		entry:   formatted,
 	})
 }
@@ -130,7 +124,7 @@ func (tb *fakeTB) Error(args ...interface{}) {
 	tb.mu.Lock()
 	defer tb.mu.Unlock()
 
-	tb.logLocked("Error", args...)
+	tb.logLocked(getCallers(), args...)
 	tb.failLocked()
 }
 
@@ -138,7 +132,7 @@ func (tb *fakeTB) Errorf(format string, args ...interface{}) {
 	tb.mu.Lock()
 	defer tb.mu.Unlock()
 
-	tb.logfLocked("Errorf", format, args...)
+	tb.logfLocked(getCallers(), format, args...)
 	tb.failLocked()
 }
 
@@ -179,12 +173,12 @@ func (tb *fakeTB) Fatal(args ...interface{}) {
 	tb.mu.Lock()
 	defer tb.mu.Unlock()
 
-	tb.logLocked("Fatal", args...)
+	tb.logLocked(getCallers(), args...)
 	tb.failNowLocked()
 }
 
 func (tb *fakeTB) Fatalf(format string, args ...interface{}) {
-	tb.logfLocked("Fatalf", format, args...)
+	tb.logfLocked(getCallers(), format, args...)
 	tb.FailNow()
 }
 
@@ -194,11 +188,11 @@ func (tb *fakeTB) Helper() {
 }
 
 func (tb *fakeTB) Log(args ...interface{}) {
-	tb.logLocked("Log", args...)
+	tb.logLocked(getCallers(), args...)
 }
 
 func (tb *fakeTB) Logf(format string, args ...interface{}) {
-	tb.logfLocked("Logf", format, args...)
+	tb.logfLocked(getCallers(), format, args...)
 }
 
 func (tb *fakeTB) Name() string {
@@ -211,12 +205,12 @@ func (tb *fakeTB) Setenv(key, value string) {
 }
 
 func (tb *fakeTB) Skip(args ...interface{}) {
-	tb.logLocked("Skip", args...)
+	tb.logLocked(getCallers(), args...)
 	tb.skipNowLocked()
 }
 
 func (tb *fakeTB) Skipf(format string, args ...interface{}) {
-	tb.logfLocked("Skipf", format, args...)
+	tb.logfLocked(getCallers(), format, args...)
 	tb.SkipNow()
 }
 
@@ -240,12 +234,12 @@ func (tb *fakeTB) TempDir() string {
 	return "tmp"
 }
 
-func getCallers(skip int) []uintptr {
+func getCallers() []uintptr {
 	depth := 32
 	for {
 		pc := make([]uintptr, depth)
 		// runtime.Callers returns itself, so skip that, and this function.
-		n := runtime.Callers(skip+2, pc)
+		n := runtime.Callers(2, pc)
 		if n < len(pc) {
 			return pc[:n]
 		}
