@@ -13,5 +13,8 @@ RUN_ACTUAL_TEST=1 go test -v -trimpath -run TestCmp_ -json |
 	perl -pe 's/0x[0-9a-fA-F]+/0x0000/g' |
 	perl -pe 's/goroutine [0-9]+/goroutine 1/g' |
 
+	# Replace line numbers in stdlib files (matches */*.go)
+	perl -pe 's/(\\t[a-z]+\/[a-z]+.go):[0-9]+/\1:1/g' |
+
 	# dummy cat for consistently terminating above commands with |
 	cat
