@@ -35,4 +35,5 @@ jobs:
       run: go test -v ./...
 
     - name: Verify golden files
+      if: matrix.go-version == '1.23.x'
       run: make diff-testdata
