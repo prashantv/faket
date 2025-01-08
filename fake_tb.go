@@ -183,11 +183,6 @@ func (tb *fakeTB) Fatalf(format string, args ...interface{}) {
 	tb.FailNow()
 }
 
-func (tb *fakeTB) Helper() {
-	// TODO(prashant): Implement Helper, this should result in the helper function frame being skipped
-	// in any caller file:name resolution.
-}
-
 func (tb *fakeTB) Log(args ...interface{}) {
 	tb.logLocked(getCallers(), args...)
 }
