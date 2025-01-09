@@ -1,7 +1,6 @@
 package faket
 
 import (
-	"context"
 	"fmt"
 	"runtime"
 	"strings"
@@ -48,7 +47,7 @@ func RunTest(testFn func(t testing.TB)) TestResult {
 		testFn(tb)
 	}()
 
-	tb.waitForCompleted(context.Background())
+	<-tb.completed
 	return TestResult{tb}
 }
 
@@ -82,15 +81,6 @@ func (tb *fakeTB) done() bool {
 		return true
 	default:
 		return false
-	}
-}
-
-func (tb *fakeTB) waitForCompleted(ctx context.Context) error {
-	select {
-	case <-ctx.Done():
-		return ctx.Err()
-	case <-tb.completed:
-		return nil
 	}
 }
 

@@ -7,8 +7,6 @@ import (
 	"strings"
 )
 
-const pkg = "github.com/prashantv/faket"
-
 // TestResult is the result of runnming a test against a fake [testing.TB].
 type TestResult struct {
 	res *fakeTB
