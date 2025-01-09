@@ -22,7 +22,7 @@ func StrContainsInOrder(t testing.TB, s string, contains ...string) {
 	}
 }
 
-func ExampleFail() {
+func ExampleRunTest_failure() {
 	res := faket.RunTest(func(t testing.TB) {
 		StrContainsInOrder(t, "help test foo", "test", "helper")
 	})
