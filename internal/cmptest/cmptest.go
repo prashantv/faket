@@ -101,10 +101,19 @@ func CompareOpts(t *testing.T, opts Opts, f func(t testing.TB)) {
 			want.Equal(t, "skip test Skipped", res.Skipped(), true)
 			resultEvent = true
 		case "output":
-			// Only space prefixed lines are t.Log output
-			if trimmed, ok := strings.CutPrefix(ev.Output, "    "); ok {
-				wantOutput = append(wantOutput, strings.TrimSuffix(trimmed, "\n"))
+			trimmed, ok := strings.CutPrefix(ev.Output, "    ")
+			if !ok {
+				// Only space prefixed lines are t.Log output
+				continue
 			}
+
+			if strings.HasPrefix(trimmed, "--- ") {
+				// Lines starting with '    ---' are subtest pass/skip/fail lines, skip them.
+				continue
+			}
+
+			trimmed = strings.TrimSuffix(trimmed, "\n")
+			wantOutput = append(wantOutput, trimmed)
 		default:
 			t.Fatal("unknown action", ev.Action)
 		}

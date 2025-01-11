@@ -1,6 +1,8 @@
 package faket_test
 
 import (
+	"math"
+	"os"
 	"testing"
 
 	"github.com/prashantv/faket/internal/cmptest"
@@ -8,6 +10,8 @@ import (
 
 // These integration-style tests are used to compare the real output of running
 // a test to the result of `RunTest`.
+
+var goLatest = os.Getenv("GO_NOT_LATEST") != "true"
 
 func TestCmp_Success(t *testing.T) {
 	cmptest.Compare(t, func(t testing.TB) {
@@ -98,7 +102,7 @@ func TestCmp_CleanupSkip(t *testing.T) {
 		})
 		t.Cleanup(func() {
 			t.Log("cleanup 2")
-			// t.Skip("skip in cleanup") // temporarily disabled
+			t.Skip("skip in cleanup")
 			t.Log("log after skip in cleanup")
 		})
 		t.Cleanup(func() {
@@ -139,24 +143,77 @@ func log(t testing.TB) {
 }
 
 func TestCmp_NestedCleanup(t *testing.T) {
-	cmptest.Compare(t, func(t testing.TB) {
-		t.Log("log 1")
-		defer t.Log("defer 1")
+	// bit mask helpers
+	const never = 0
+	const all = math.MaxUint32
+	iter := func(i int) uint32 {
+		return (1 << i)
+	}
+	isSet := func(mask uint32, i int) bool {
+		return mask&iter(i) > 0
+	}
 
-		for i := 1; i <= 3; i++ {
-			t.Cleanup(func() {
-				defer t.Log("defer cleanup", i)
-				t.Log("cleanup", i)
+	tests := []struct {
+		name       string
+		onlyLatest bool
+		iterations int
 
-				if i == 2 {
-					return
+		// bit masks of which iterations to do the action on.
+		returnOuter uint32
+		skipInner   uint32
+	}{
+		{
+			name:        "always nest without skip",
+			iterations:  2,
+			returnOuter: never,
+			skipInner:   never,
+		},
+		{
+			name:        "always nest with skips",
+			iterations:  2,
+			returnOuter: never,
+			skipInner:   all,
+			onlyLatest:  true, // log caller of panic.go:<line> changes line across versions.
+		},
+		{
+			name:        "mix nesting and skips",
+			iterations:  3,
+			returnOuter: iter(2),
+			skipInner:   iter(1) | iter(2),
+			onlyLatest:  true, // log caller of panic.go:<line> changes line across versions.
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if tt.onlyLatest && !goLatest {
+				t.Skip("can only run with latest go")
+			}
+
+			cmptest.Compare(t, func(t testing.TB) {
+				t.Log("log 1")
+				defer t.Log("defer 1")
+
+				for i := 1; i <= tt.iterations; i++ {
+					t.Cleanup(func() {
+						defer t.Log("defer cleanup", i)
+						t.Log("cleanup", i)
+
+						if isSet(tt.returnOuter, i) {
+							return
+						}
+
+						t.Cleanup(func() {
+							defer t.Log("defer nested cleanup", i)
+							t.Log("nested cleanup", i)
+
+							if isSet(tt.skipInner, i) {
+								t.Skip("skip in nested cleanup", i)
+							}
+						})
+					})
 				}
-
-				t.Cleanup(func() {
-					defer t.Log("defer nested cleanup", i)
-					t.Log("nested cleanup", i)
-				})
 			})
-		}
-	})
+		})
+	}
 }
