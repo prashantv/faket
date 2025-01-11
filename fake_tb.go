@@ -18,6 +18,7 @@ type fakeTB struct {
 	mu sync.Mutex // protects all of the below fields.
 
 	cleanups []func()
+	helpers  map[uintptr]struct{}
 	Logs     []logEntry
 
 	completed chan struct{}
@@ -54,6 +55,7 @@ func RunTest(testFn func(t testing.TB)) TestResult {
 func newRecordingTB() *fakeTB {
 	return &fakeTB{
 		completed: make(chan struct{}),
+		helpers:   make(map[uintptr]struct{}),
 	}
 }
 
@@ -174,8 +176,21 @@ func (tb *fakeTB) Fatalf(format string, args ...interface{}) {
 }
 
 func (tb *fakeTB) Helper() {
-	// TODO(prashant): Implement Helper, this should result in the helper function frame being skipped
-	// in any caller file:name resolution.
+	tb.mu.Lock()
+	defer tb.mu.Unlock()
+
+	const skip = 2 // runtime.Callers + Helper
+	var pc [1]uintptr
+	n := runtime.Callers(skip, pc[:])
+	if n == 0 {
+		// no callers, ignore.
+		// Note: real testing.TB would panic here, but we avoid panics in faket.
+		return
+	}
+
+	if _, ok := tb.helpers[pc[0]]; !ok {
+		tb.helpers[pc[0]] = struct{}{}
+	}
 }
 
 func (tb *fakeTB) Log(args ...interface{}) {
