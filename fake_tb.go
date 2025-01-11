@@ -192,7 +192,6 @@ func (tb *fakeTB) Name() string {
 
 func (tb *fakeTB) Setenv(key, value string) {
 	// Set the environment, but clear it on cleanup
-
 }
 
 func (tb *fakeTB) Skip(args ...interface{}) {

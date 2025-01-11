@@ -1,3 +1,4 @@
+// Package want is a minimal assertion helper library for tests.
 package want
 
 import (
@@ -39,6 +40,7 @@ func Contains(t testing.TB, msg string, got, contains string) {
 	t.Fatalf("%s: expected contains\ngot: %s\nwant contains: %s", msg, got, contains)
 }
 
+// NotContains asserts that the given substring is not contained.
 func NotContains(t testing.TB, msg string, got, notContains string) {
 	t.Helper()
 

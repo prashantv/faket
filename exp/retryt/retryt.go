@@ -35,9 +35,9 @@ func Run(t testing.TB, opts Opts, testFn func(testing.TB)) {
 		if !tr.Failed() {
 			opts.Passed(t, attempt, tr)
 			break
-		} else {
-			opts.Retry(t, attempt, tr)
 		}
+
+		opts.Retry(t, attempt, tr)
 	}
 
 	testFn(t)
