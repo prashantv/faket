@@ -107,3 +107,33 @@ func TestCmp_CleanupSkip(t *testing.T) {
 		t.Log("log 2")
 	})
 }
+
+func TestCmp_Helper(t *testing.T) {
+	cmptest.Compare(t, func(t testing.TB) {
+		t.Log("call log directly")
+		log(t)
+
+		t.Log("log in helper")
+		logHelper(t, 1, func() {})
+		logHelper(t, 3, func() {})
+
+		t.Log("log helper then log")
+		logHelper(t, 3, func() { log(t) })
+	})
+}
+
+func logHelper(t testing.TB, n int, last func()) {
+	t.Helper()
+
+	t.Log("logHelper", n)
+
+	if n == 0 {
+		last()
+		return
+	}
+	logHelper(t, n-1, last)
+}
+
+func log(t testing.TB) {
+	t.Log("log")
+}
