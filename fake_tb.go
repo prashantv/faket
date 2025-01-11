@@ -69,12 +69,32 @@ func (tb *fakeTB) checkPanic() {
 
 func (tb *fakeTB) postTest() {
 	defer close(tb.completed)
+	tb.runCleanups()
+}
 
-	for _, f := range tb.cleanups {
-		defer f()
+func (tb *fakeTB) runCleanups() {
+	// Run cleanups in last-first order, similar to defers.
+	// Don't iterate by index, as the slice can grow (cleanups can add cleanups).
+	for {
+		cleanupFn := func() func() {
+			tb.mu.Lock()
+			defer tb.mu.Unlock()
+
+			if len(tb.cleanups) == 0 {
+				return nil
+			}
+
+			last := len(tb.cleanups) - 1
+			fn := tb.cleanups[last]
+			tb.cleanups = tb.cleanups[:last]
+			return fn
+		}()
+
+		if cleanupFn == nil {
+			break
+		}
+		cleanupFn()
 	}
-
-	// TODO(prashant): Handle nested Cleanups
 }
 
 func (tb *fakeTB) done() bool {
