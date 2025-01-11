@@ -64,6 +64,7 @@ func TestCmp_SkipThenFail(t *testing.T) {
 func TestCmp_Fatal(t *testing.T) {
 	cmptest.Compare(t, func(t testing.TB) {
 		t.Log("pre-fatal")
+		//nolint:revive // skip unreachable skip
 		t.Fatal("fatal")
 		t.Log("post-fatal")
 	})

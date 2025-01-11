@@ -12,26 +12,35 @@ type TestResult struct {
 	res *fakeTB
 }
 
+// Skipped reports if a test was skipped.
+//
+// If a test failed before it was skipped, then Failed takes precedence
+// and Skipped returns false. To check if the test was skipped after a failure
+// see [FailedAndSkipped].
 func (r TestResult) Skipped() bool {
-	// If a test is failed and skipped, failed takes precedence, from SkipNow docs:
-	// If a test fails (see Error, Errorf, Fail) and is then skipped,
-	// it is still considered to have failed.
+	// Above behaviour is for consistency with testing.TB, from SkipNow docs:
+	// > If a test fails (see Error, Errorf, Fail) and is then skipped,
+	// > it is still considered to have failed.
 	if r.Failed() {
 		return false
 	}
 	return r.res.Skipped()
 }
 
-// FailedAndSkipped allows determine whether a test marked as Failed was also skipped.
-// This is not possible to determine using the stdlib.
+// FailedAndSkipped reports if a test failed, and then was skipped.
+//
+// See [Skipped] for more details for how this differs from using
+// [Failed] and [Skipped].
 func (r TestResult) FailedAndSkipped() bool {
 	return r.res.Failed() && r.res.Skipped()
 }
 
+// Failed reports if a test failed.
 func (r TestResult) Failed() bool {
 	return r.res.Failed()
 }
 
+// Panicked reports if a test panicked.
 func (r TestResult) Panicked() bool {
 	return r.res.panicked
 }
