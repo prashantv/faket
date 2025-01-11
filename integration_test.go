@@ -98,7 +98,7 @@ func TestCmp_CleanupSkip(t *testing.T) {
 		})
 		t.Cleanup(func() {
 			t.Log("cleanup 2")
-			t.Skip("skip in cleanup")
+			// t.Skip("skip in cleanup") // temporarily disabled
 			t.Log("log after skip in cleanup")
 		})
 		t.Cleanup(func() {
@@ -136,4 +136,27 @@ func logHelper(t testing.TB, n int, last func()) {
 
 func log(t testing.TB) {
 	t.Log("log")
+}
+
+func TestCmp_NestedCleanup(t *testing.T) {
+	cmptest.Compare(t, func(t testing.TB) {
+		t.Log("log 1")
+		defer t.Log("defer 1")
+
+		for i := 1; i <= 3; i++ {
+			t.Cleanup(func() {
+				defer t.Log("defer cleanup", i)
+				t.Log("cleanup", i)
+
+				if i == 2 {
+					return
+				}
+
+				t.Cleanup(func() {
+					defer t.Log("defer nested cleanup", i)
+					t.Log("nested cleanup", i)
+				})
+			})
+		}
+	})
 }
