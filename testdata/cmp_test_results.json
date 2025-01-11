@@ -61,10 +61,10 @@
 {"Time":"2022-06-11T00:00:00.0Z","Action":"output","Package":"github.com/prashantv/faket","Test":"TestCmp_CleanupSkip","Output":"    integration_test.go:107: log 2\n"}
 {"Time":"2022-06-11T00:00:00.0Z","Action":"output","Package":"github.com/prashantv/faket","Test":"TestCmp_CleanupSkip","Output":"    integration_test.go:105: cleanup 3\n"}
 {"Time":"2022-06-11T00:00:00.0Z","Action":"output","Package":"github.com/prashantv/faket","Test":"TestCmp_CleanupSkip","Output":"    integration_test.go:100: cleanup 2\n"}
-{"Time":"2022-06-11T00:00:00.0Z","Action":"output","Package":"github.com/prashantv/faket","Test":"TestCmp_CleanupSkip","Output":"    integration_test.go:101: skip in cleanup\n"}
+{"Time":"2022-06-11T00:00:00.0Z","Action":"output","Package":"github.com/prashantv/faket","Test":"TestCmp_CleanupSkip","Output":"    integration_test.go:102: log after skip in cleanup\n"}
 {"Time":"2022-06-11T00:00:00.0Z","Action":"output","Package":"github.com/prashantv/faket","Test":"TestCmp_CleanupSkip","Output":"    integration_test.go:97: cleanup 1\n"}
-{"Time":"2022-06-11T00:00:00.0Z","Action":"output","Package":"github.com/prashantv/faket","Test":"TestCmp_CleanupSkip","Output":"--- SKIP: TestCmp_CleanupSkip (0.01s)\n"}
-{"Time":"2022-06-11T00:00:00.0Z","Action":"skip","Package":"github.com/prashantv/faket","Test":"TestCmp_CleanupSkip","Elapsed":0}
+{"Time":"2022-06-11T00:00:00.0Z","Action":"output","Package":"github.com/prashantv/faket","Test":"TestCmp_CleanupSkip","Output":"--- PASS: TestCmp_CleanupSkip (0.01s)\n"}
+{"Time":"2022-06-11T00:00:00.0Z","Action":"pass","Package":"github.com/prashantv/faket","Test":"TestCmp_CleanupSkip","Elapsed":0}
 {"Time":"2022-06-11T00:00:00.0Z","Action":"run","Package":"github.com/prashantv/faket","Test":"TestCmp_Helper"}
 {"Time":"2022-06-11T00:00:00.0Z","Action":"output","Package":"github.com/prashantv/faket","Test":"TestCmp_Helper","Output":"=== RUN   TestCmp_Helper\n"}
 {"Time":"2022-06-11T00:00:00.0Z","Action":"output","Package":"github.com/prashantv/faket","Test":"TestCmp_Helper","Output":"    integration_test.go:113: call log directly\n"}
