@@ -15,6 +15,8 @@ jobs:
     strategy:
       matrix:
         go-version: ['1.22.x', '1.23.x']
+    env:
+      GO_NOT_LATEST: ${{ matrix.go-version != '1.23.x' }}
 
     steps:
     - uses: actions/checkout@v4
@@ -34,7 +36,7 @@ jobs:
       run: go test -v ./...
 
     - name: Verify golden files
-      if: matrix.go-version == '1.23.x'
+      if: env.GO_NOT_LATEST == 'false'
       run: make diff-testdata
 
   lint:

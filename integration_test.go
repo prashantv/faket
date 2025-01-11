@@ -2,6 +2,7 @@ package faket_test
 
 import (
 	"math"
+	"os"
 	"testing"
 
 	"github.com/prashantv/faket/internal/cmptest"
@@ -9,6 +10,8 @@ import (
 
 // These integration-style tests are used to compare the real output of running
 // a test to the result of `RunTest`.
+
+var goLatest = os.Getenv("GO_NOT_LATEST") != "true"
 
 func TestCmp_Success(t *testing.T) {
 	cmptest.Compare(t, func(t testing.TB) {
@@ -152,6 +155,7 @@ func TestCmp_NestedCleanup(t *testing.T) {
 
 	tests := []struct {
 		name       string
+		onlyLatest bool
 		iterations int
 
 		// bit masks of which iterations to do the action on.
@@ -169,17 +173,23 @@ func TestCmp_NestedCleanup(t *testing.T) {
 			iterations:  2,
 			returnOuter: never,
 			skipInner:   all,
+			onlyLatest:  true, // log caller of panic.go:<line> changes line across versions.
 		},
 		{
 			name:        "mix nesting and skips",
 			iterations:  3,
 			returnOuter: iter(2),
 			skipInner:   iter(1) | iter(2),
+			onlyLatest:  true, // log caller of panic.go:<line> changes line across versions.
 		},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			if tt.onlyLatest && !goLatest {
+				t.Skip("can only run with latest go")
+			}
+
 			cmptest.Compare(t, func(t testing.TB) {
 				t.Log("log 1")
 				defer t.Log("defer 1")
