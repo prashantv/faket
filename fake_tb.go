@@ -73,6 +73,15 @@ func (tb *fakeTB) postTest() {
 }
 
 func (tb *fakeTB) runCleanups() {
+	// If defer runs with !finished, then a cleanup must have panicked
+	// (which could be a Skip/Fatal). Continue running remaining cleanups.
+	var finished bool
+	defer func() {
+		if !finished {
+			tb.runCleanups()
+		}
+	}()
+
 	// Run cleanups in last-first order, similar to defers.
 	// Don't iterate by index, as the slice can grow (cleanups can add cleanups).
 	for {
@@ -91,6 +100,7 @@ func (tb *fakeTB) runCleanups() {
 		}()
 
 		if cleanupFn == nil {
+			finished = true
 			break
 		}
 		cleanupFn()

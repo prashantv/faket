@@ -1,16 +1,7 @@
 ## TODO
 
-## Core functionality
+## Caller information
 
-* Support for Nested `t.Cleanup` function calls
-  * With support for `t.Skip` inside the nested cleanup calls.
-
-
-## Cosmetic
-
- * Naming and API surface for getting logs, `testingLogOutput()`, `Logs()` and `LogsList()`
-   and ideally some way to get detailed information for the log (structured message, function, caller, etc)
-
-## Feature Requests
-
-* Return caller information for logs.
+ * Check how caller information is reported when `t.Helper` and `t.Cleanup` are mixed.
+ * Provide ability to get structured information for logs which include caller, function, etc.
+   * Clean up the API around gettling logs (testing log output format, list, string, etc).
