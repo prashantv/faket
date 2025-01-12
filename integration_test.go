@@ -43,14 +43,6 @@ func TestCmp_Failure(t *testing.T) {
 	})
 }
 
-// TODO(prashant): Panic stops remaining test execution, so move test
-// to a separate package.
-// func TestCmp_Panic(t *testing.T) {
-// 	compareTest(t, func(t testing.TB) {
-// 		panic("panic")
-// 	})
-// }
-
 func TestCmp_FailThenSkipCmp(t *testing.T) {
 	cmptest.Compare(t, func(t testing.TB) {
 		t.Error("error")
