@@ -3,9 +3,11 @@ package faket_test
 import (
 	"math"
 	"os"
+	"path"
 	"testing"
 
 	"github.com/prashantv/faket/internal/cmptest"
+	"github.com/prashantv/faket/internal/sliceutil"
 )
 
 // These integration-style tests are used to compare the real output of running
@@ -273,4 +275,45 @@ func TestCmp_Setenv(t *testing.T) {
 			})
 		})
 	}
+}
+
+func TestCmp_TmpDir(t *testing.T) {
+	cmptest.Compare(t, func(t testing.TB) {
+		listFiles := func(msg, dir string) {
+			// Note: dir is not included in messages for deterministic test output.
+			entries, err := os.ReadDir(dir)
+			if os.IsNotExist(err) {
+				t.Logf("missing dir %s", msg)
+				return
+			} else if err != nil {
+				t.Fatalf("ReadDir %s failed: %v", msg, err)
+			}
+
+			t.Logf("ReadDir %s: %v", msg, sliceutil.Map(entries, os.DirEntry.Name))
+		}
+
+		var d1, d2 string
+
+		t.Cleanup(func() {
+			listFiles("d1 post-cleanup", d1)
+			listFiles("d2 post-cleanup", d2)
+		})
+
+		d1 = t.TempDir()
+		d2 = t.TempDir()
+		listFiles("d1 initial", d1)
+		listFiles("d2 initial", d2)
+
+		createFile := func(dir, f string) {
+			if err := os.WriteFile(path.Join(dir, f), []byte("dummy"), 0o666); err != nil {
+				t.Fatalf("WriteFile %s in %s failed: %v", f, dir, err)
+			}
+		}
+
+		createFile(d1, "f1")
+		createFile(d1, "f2")
+		createFile(d2, "f3")
+		listFiles("d1 after create", d1)
+		listFiles("d2 after create", d2)
+	})
 }

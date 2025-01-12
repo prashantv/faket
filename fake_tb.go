@@ -392,5 +392,30 @@ func (tb *fakeTB) Setenv(key, value string) {
 }
 
 func (tb *fakeTB) TempDir() string {
-	return "tmp"
+	pattern := strings.Map(func(r rune) rune {
+		// Similar to stdlib, but with more restricted allowed set.
+		const allowed = " -_"
+		if '0' <= r && r <= '9' ||
+			'a' <= r && r <= 'z' ||
+			'A' <= r && r <= 'Z' {
+			return r
+		}
+		if strings.ContainsRune(allowed, r) {
+			return r
+		}
+		return -1
+	}, tb.Name())
+
+	d, err := os.MkdirTemp("", pattern)
+	if err != nil {
+		tb.Fatalf("TempDir: %v", err)
+	}
+
+	tb.Cleanup(func() {
+		if err := os.RemoveAll(d); err != nil {
+			tb.Errorf("TempDir RemoveAll cleanup: %v", err)
+		}
+	})
+
+	return d
 }
