@@ -6,6 +6,8 @@ import (
 	"strings"
 	"sync"
 	"testing"
+
+	"github.com/prashantv/faket/internal/sliceutil"
 )
 
 const (
@@ -24,7 +26,7 @@ type fakeTB struct {
 
 	cleanups []cleanup
 	helpers  map[uintptr]struct{}
-	Logs     []logEntry
+	logs     []logEntry
 
 	completed chan struct{}
 	failed    bool
@@ -163,7 +165,7 @@ func (tb *fakeTB) Cleanup(f func()) {
 
 func (tb *fakeTB) logfLocked(callers []uintptr, format string, args ...interface{}) {
 	formatted := fmt.Sprintf(format, args...)
-	tb.Logs = append(tb.Logs, logEntry{
+	tb.logs = append(tb.logs, logEntry{
 		callers: callers,
 		entry:   formatted,
 	})
@@ -175,7 +177,7 @@ func (tb *fakeTB) logLocked(callers []uintptr, args ...interface{}) {
 	formatted := fmt.Sprintln(args...)
 	formatted = strings.TrimSuffix(formatted, "\n")
 
-	tb.Logs = append(tb.Logs, logEntry{
+	tb.logs = append(tb.logs, logEntry{
 		callers:        callers,
 		cleanupCallers: tb.curCleanupPC,
 		entry:          formatted,
@@ -304,6 +306,58 @@ func (tb *fakeTB) Skipped() bool {
 
 func (tb *fakeTB) TempDir() string {
 	return "tmp"
+}
+
+func (tb *fakeTB) helperFuncs() []string {
+	funcs := make([]string, 0, len(tb.helpers))
+	for pc := range tb.helpers {
+		if fn := pcToFunction(pc); fn != "" {
+			funcs = append(funcs, fn)
+		}
+	}
+	return funcs
+}
+
+func (tb *fakeTB) toLog(e logEntry) Log {
+	l := Log{
+		Message: e.entry,
+	}
+	skipSet := sliceutil.ToSet(tb.helperFuncs())
+
+	// When a defer is triggered by a panic, it's added to the trace
+	// but panic is not shown as a log caller.
+	skipSet["runtime.gopanic"] = struct{}{}
+
+	frames := runtime.CallersFrames(e.callers)
+
+	f, _ := frames.Next()
+	if f == (runtime.Frame{}) {
+		return l
+	}
+
+	// First frame is the tb caller.
+	l.TBFunc = f.Function
+
+	skip := true
+	for skip {
+		f, _ = frames.Next()
+		if f == (runtime.Frame{}) {
+			return l
+		}
+
+		// If we hit the cleanup root, then use the callers of the t.Cleanup.
+		if f.Function == tb.cleanupRoot {
+			frames = runtime.CallersFrames(e.cleanupCallers)
+			continue
+		}
+
+		_, skip = skipSet[f.Function]
+	}
+
+	l.CallerFile = f.File
+	l.CallerLine = f.Line
+	l.CallerFunc = f.Function
+	return l
 }
 
 func getCallers(skip int) []uintptr {

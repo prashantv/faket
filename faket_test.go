@@ -13,5 +13,5 @@ func TestFakeT_Success(t *testing.T) {
 	want.Equal(t, "Failed", res.Failed(), false)
 	want.Equal(t, "Skipped", res.Skipped(), false)
 
-	want.Equal(t, "Logs", res.Logs(), "this is log 1")
+	want.DeepEqual(t, "Logs", res.Logs().Messages(), []string{"this is log 1"})
 }

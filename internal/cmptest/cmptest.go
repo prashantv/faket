@@ -80,7 +80,7 @@ func CompareOpts(t *testing.T, opts Opts, f func(t testing.TB)) {
 
 	res := faket.RunTest(f)
 
-	var wantOutput []string
+	var wantOutput strings.Builder
 	realTestEvents := testEvents[t.Name()]
 	var resultEvent bool
 	for _, ev := range realTestEvents {
@@ -112,14 +112,13 @@ func CompareOpts(t *testing.T, opts Opts, f func(t testing.TB)) {
 				continue
 			}
 
-			trimmed = strings.TrimSuffix(trimmed, "\n")
-			wantOutput = append(wantOutput, trimmed)
+			wantOutput.WriteString(trimmed)
 		default:
 			t.Fatal("unknown action", ev.Action)
 		}
 	}
 
 	want.Equal(t, "result event", resultEvent, true)
-	want.DeepEqual(t, "log output", res.LogsWithCaller(), wantOutput)
+	want.Equal(t, "log output", res.Logs().String(), wantOutput.String())
 	want.Equal(t, "panicked", res.Panicked(), opts.WantPanic)
 }

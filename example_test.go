@@ -28,11 +28,11 @@ func ExampleRunTest_failure() {
 	})
 
 	fmt.Println("Failed:", res.Failed())
-	fmt.Println("Logs:", res.Logs())
+	fmt.Println("Logs:", res.Logs().String())
 
 	// Output:
 	// Failed: true
-	// Logs: failed to find "helper" in remaining string " foo"
+	// Logs: example_test.go:16: failed to find "helper" in remaining string " foo"
 }
 
 func TestStrContainsInOrder(t *testing.T) {

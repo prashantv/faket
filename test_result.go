@@ -3,9 +3,10 @@ package faket
 import (
 	"fmt"
 	"path/filepath"
-	"runtime"
 	"sort"
 	"strings"
+
+	"github.com/prashantv/faket/internal/sliceutil"
 )
 
 // TestResult is the result of runnming a test against a fake [testing.TB].
@@ -46,92 +47,46 @@ func (r TestResult) Panicked() bool {
 	return r.res.panicked
 }
 
-// LogsList returns a list of logs
-func (r TestResult) LogsList() []string {
-	logs := make([]string, 0, len(r.res.Logs))
-	for _, l := range r.res.Logs {
-		logs = append(logs, l.entry)
-	}
-	return logs
+// Logs represents a list of logged entries.
+type Logs []Log
+
+// Log is a single log entry, along with caller information.
+type Log struct {
+	Message    string
+	CallerFile string
+	CallerLine int
+	CallerFunc string
+
+	// TBFunc is the testing.TB function that generated this log message.
+	TBFunc string
 }
 
-// Logs returns the log output of the test.
-// It merges all logs strings into a single string.
-func (r TestResult) Logs() string {
-	return strings.Join(r.LogsList(), "\n")
+// Logs returns a list of log entries logged by the test.
+func (r TestResult) Logs() Logs {
+	return sliceutil.Map(r.res.logs, r.res.toLog)
 }
 
-// LogsWithCaller returns the log output of the test with caller information
-// similar to the output of `go test`.
-func (r TestResult) LogsWithCaller() []string {
-	logs := make([]string, 0, len(r.res.Logs))
-	for _, l := range r.res.Logs {
-		ci := getCallerInfo(l, r.res.cleanupRoot, r.Helpers())
-		line := fmt.Sprintf("%s:%d: %v", filepath.Base(ci.callerFile), ci.callerLine, l.entry)
-		logs = append(logs, line)
+// String returns the log output, as it would be printed by `go test`
+// with caller information.
+func (ls Logs) String() string {
+	var buf strings.Builder
+	for _, l := range ls {
+		fmt.Fprintf(&buf, "%s:%d: %v\n", filepath.Base(l.CallerFile), l.CallerLine, l.Message)
 	}
-	return logs
+	return buf.String()
+}
+
+// Messages returns a list of individual logs.
+func (ls Logs) Messages() []string {
+	return sliceutil.Map(ls, func(l Log) string {
+		return l.Message
+	})
 }
 
 // Helpers returns a list of functions that have called [testing.TB].Helper.
 // The returned list is sorted by the full package+function.
 func (r TestResult) Helpers() []string {
-	funcs := make([]string, 0, len(r.res.helpers))
-	for pc := range r.res.helpers {
-		if fn := pcToFunction(pc); fn != "" {
-			funcs = append(funcs, fn)
-		}
-	}
+	funcs := r.res.helperFuncs()
 	sort.Strings(funcs)
 	return funcs
-}
-
-type callerInfo struct {
-	logFn string
-
-	callerFile string
-	callerLine int
-}
-
-func getCallerInfo(ent logEntry, cleanupRoot string, skipFuncs []string) callerInfo {
-	skipSet := make(map[string]struct{})
-	for _, f := range skipFuncs {
-		skipSet[f] = struct{}{}
-	}
-
-	// When a defer is triggered by a panic, it's added to the trace
-	// but panic is not shown as a log caller.
-	skipSet["runtime.gopanic"] = struct{}{}
-
-	frames := runtime.CallersFrames(ent.callers)
-
-	f, _ := frames.Next()
-	if f == (runtime.Frame{}) {
-		return callerInfo{}
-	}
-
-	// First frame is the fake_tb caller.
-	ci := callerInfo{
-		logFn: f.Function,
-	}
-
-	skip := true
-	for skip {
-		f, _ = frames.Next()
-		if f == (runtime.Frame{}) {
-			return ci
-		}
-
-		// If we hit the cleanup root, then use the callers of the t.Cleanup.
-		if f.Function == cleanupRoot {
-			frames = runtime.CallersFrames(ent.cleanupCallers)
-			continue
-		}
-
-		_, skip = skipSet[f.Function]
-	}
-
-	ci.callerFile = f.File
-	ci.callerLine = f.Line
-	return ci
 }
