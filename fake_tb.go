@@ -78,6 +78,9 @@ func newRecordingTB() *fakeTB {
 
 func (tb *fakeTB) checkPanic() {
 	if r := recover(); r != nil {
+		tb.mu.Lock()
+		defer tb.mu.Unlock()
+
 		tb.panicked = true
 		tb.recovered = r
 		tb.recoverCallers = getCallers(skipSelf)
@@ -86,6 +89,7 @@ func (tb *fakeTB) checkPanic() {
 
 func (tb *fakeTB) postTest() {
 	defer close(tb.completed)
+
 	tb.runCleanups()
 }
 
@@ -154,6 +158,7 @@ func (tb *fakeTB) done() bool {
 
 func (tb *fakeTB) Cleanup(f func()) {
 	callerPCs := getCallers(skipSelf)
+
 	tb.mu.Lock()
 	defer tb.mu.Unlock()
 
@@ -275,7 +280,7 @@ func (tb *fakeTB) Name() string {
 }
 
 func (tb *fakeTB) Setenv(key, value string) {
-	// Set the environment, but clear it on cleanup
+	// TODO: Set the environment, but clear it on cleanup
 }
 
 func (tb *fakeTB) Skip(args ...interface{}) {
@@ -309,6 +314,9 @@ func (tb *fakeTB) TempDir() string {
 }
 
 func (tb *fakeTB) helperFuncs() []string {
+	tb.mu.Lock()
+	defer tb.mu.Unlock()
+
 	funcs := make([]string, 0, len(tb.helpers))
 	for pc := range tb.helpers {
 		if fn := pcToFunction(pc); fn != "" {
