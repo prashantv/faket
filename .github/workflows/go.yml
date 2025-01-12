@@ -16,7 +16,6 @@ jobs:
       matrix:
         mise-env: ['oldstable', 'stable']
     env:
-      GO_NOT_LATEST: ${{ matrix.mise-env != 'stable' }}
       MISE_ENV: ${{ matrix.mise-env }}
 
     steps:
