@@ -44,8 +44,12 @@ jobs:
   lint:
     name: lint
     runs-on: ubuntu-latest
+    env:
+      MISE_ENV: stable
     steps:
-      - uses: actions/checkout@v4
-      - uses: jdx/mise-action@v2
-      - name: lint
-        run: mise run lint
+    - uses: actions/checkout@v4
+    - uses: jdx/mise-action@v2
+      with:
+        cache_key_prefix: mise-v0-stable
+    - name: lint
+      run: mise run lint
