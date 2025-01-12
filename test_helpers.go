@@ -23,7 +23,7 @@ func (tr TestResult) MustFail(t testing.TB, wantLog string) {
 		t.Fatal("test passed, but expected to fail")
 	}
 
-	if !strings.Contains(tr.Logs(), wantLog) {
+	if !strings.Contains(tr.Logs().String(), wantLog) {
 		t.Fatalf("test expected to fail, missing expected log %q. logs:\n%v", wantLog, tr.Logs())
 	}
 }

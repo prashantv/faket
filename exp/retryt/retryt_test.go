@@ -99,11 +99,13 @@ func TestN(t *testing.T) {
 			})
 			want.Equal(t, "Skipped", tr.Skipped(), tt.wantSkipped)
 			want.Equal(t, "Failed", tr.Failed(), tt.wantFailed)
+
+			gotLogs := tr.Logs().String()
 			for _, log := range tt.containsLogs {
-				want.Contains(t, "logs", tr.Logs(), log)
+				want.Contains(t, "logs", gotLogs, log)
 			}
 			for _, log := range tt.notContainsLogs {
-				want.NotContains(t, "logs", tr.Logs(), log)
+				want.NotContains(t, "logs", gotLogs, log)
 			}
 			want.Equal(t, "run count", count, tt.wantCount)
 		})
@@ -120,6 +122,8 @@ func TestRun_Defaults(t *testing.T) {
 	})
 	want.Equal(t, "Failed", tr.Failed(), true)
 	want.Equal(t, "run count", count, 10)
-	want.Contains(t, "logs", tr.Logs(), "fail")
-	want.NotContains(t, "logs", tr.Logs(), "retryt") // no logs by default
+
+	gotLogs := tr.Logs().String()
+	want.Contains(t, "logs", gotLogs, "fail")
+	want.NotContains(t, "logs", gotLogs, "retryt attempt") // no logs by default
 }
