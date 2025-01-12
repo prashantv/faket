@@ -140,6 +140,24 @@
 {"Time":"2022-06-11T00:00:00.0Z","Action":"output","Package":"github.com/prashantv/faket","Test":"TestCmp_CleanupHelper","Output":"    integration_test.go:215: cleanup func log\n"}
 {"Time":"2022-06-11T00:00:00.0Z","Action":"output","Package":"github.com/prashantv/faket","Test":"TestCmp_CleanupHelper","Output":"--- PASS: TestCmp_CleanupHelper (0.01s)\n"}
 {"Time":"2022-06-11T00:00:00.0Z","Action":"pass","Package":"github.com/prashantv/faket","Test":"TestCmp_CleanupHelper","Elapsed":0}
+{"Time":"2022-06-11T00:00:00.0Z","Action":"run","Package":"github.com/prashantv/faket","Test":"TestCmp_Setenv"}
+{"Time":"2022-06-11T00:00:00.0Z","Action":"output","Package":"github.com/prashantv/faket","Test":"TestCmp_Setenv","Output":"=== RUN   TestCmp_Setenv\n"}
+{"Time":"2022-06-11T00:00:00.0Z","Action":"run","Package":"github.com/prashantv/faket","Test":"TestCmp_Setenv/unset_initially"}
+{"Time":"2022-06-11T00:00:00.0Z","Action":"output","Package":"github.com/prashantv/faket","Test":"TestCmp_Setenv/unset_initially","Output":"=== RUN   TestCmp_Setenv/unset_initially\n"}
+{"Time":"2022-06-11T00:00:00.0Z","Action":"output","Package":"github.com/prashantv/faket","Test":"TestCmp_Setenv/unset_initially","Output":"    integration_test.go:269: Getenv s1: s1\n"}
+{"Time":"2022-06-11T00:00:00.0Z","Action":"output","Package":"github.com/prashantv/faket","Test":"TestCmp_Setenv/unset_initially","Output":"    integration_test.go:272: Getenv s2: s2\n"}
+{"Time":"2022-06-11T00:00:00.0Z","Action":"output","Package":"github.com/prashantv/faket","Test":"TestCmp_Setenv/unset_initially","Output":"    integration_test.go:265: LookupEnv in cleanup got  false\n"}
+{"Time":"2022-06-11T00:00:00.0Z","Action":"run","Package":"github.com/prashantv/faket","Test":"TestCmp_Setenv/set_initially"}
+{"Time":"2022-06-11T00:00:00.0Z","Action":"output","Package":"github.com/prashantv/faket","Test":"TestCmp_Setenv/set_initially","Output":"=== RUN   TestCmp_Setenv/set_initially\n"}
+{"Time":"2022-06-11T00:00:00.0Z","Action":"output","Package":"github.com/prashantv/faket","Test":"TestCmp_Setenv/set_initially","Output":"    integration_test.go:269: Getenv s1: s1\n"}
+{"Time":"2022-06-11T00:00:00.0Z","Action":"output","Package":"github.com/prashantv/faket","Test":"TestCmp_Setenv/set_initially","Output":"    integration_test.go:272: Getenv s2: s2\n"}
+{"Time":"2022-06-11T00:00:00.0Z","Action":"output","Package":"github.com/prashantv/faket","Test":"TestCmp_Setenv/set_initially","Output":"    integration_test.go:265: LookupEnv in cleanup got  false\n"}
+{"Time":"2022-06-11T00:00:00.0Z","Action":"output","Package":"github.com/prashantv/faket","Test":"TestCmp_Setenv","Output":"--- PASS: TestCmp_Setenv (0.01s)\n"}
+{"Time":"2022-06-11T00:00:00.0Z","Action":"output","Package":"github.com/prashantv/faket","Test":"TestCmp_Setenv/unset_initially","Output":"    --- PASS: TestCmp_Setenv/unset_initially (0.01s)\n"}
+{"Time":"2022-06-11T00:00:00.0Z","Action":"pass","Package":"github.com/prashantv/faket","Test":"TestCmp_Setenv/unset_initially","Elapsed":0}
+{"Time":"2022-06-11T00:00:00.0Z","Action":"output","Package":"github.com/prashantv/faket","Test":"TestCmp_Setenv/set_initially","Output":"    --- PASS: TestCmp_Setenv/set_initially (0.01s)\n"}
+{"Time":"2022-06-11T00:00:00.0Z","Action":"pass","Package":"github.com/prashantv/faket","Test":"TestCmp_Setenv/set_initially","Elapsed":0}
+{"Time":"2022-06-11T00:00:00.0Z","Action":"pass","Package":"github.com/prashantv/faket","Test":"TestCmp_Setenv","Elapsed":0}
 {"Time":"2022-06-11T00:00:00.0Z","Action":"output","Package":"github.com/prashantv/faket","Output":"FAIL\n"}
 {"Time":"2022-06-11T00:00:00.0Z","Action":"output","Package":"github.com/prashantv/faket","Output":"exit status 1\n"}
 {"Time":"2022-06-11T00:00:00.0Z","Action":"output","Package":"github.com/prashantv/faket","Output":"FAIL\tgithub.com/prashantv/faket\t0.01s\n"}
