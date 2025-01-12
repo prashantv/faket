@@ -11,11 +11,6 @@ import (
 	"github.com/prashantv/faket/internal/sliceutil"
 )
 
-const (
-	withSelf = 0
-	skipSelf = 1
-)
-
 var _ testing.TB = (*fakeTB)(nil)
 
 type fakeTB struct {
@@ -57,7 +52,7 @@ type cleanup struct {
 // RunTest runs the given test using a fake [testing.TB] and returns
 // the result of running the test.
 func RunTest(testFn func(t testing.TB)) TestResult {
-	tb := newRecordingTB()
+	tb := newFakeTB()
 
 	go func() {
 		defer tb.checkPanic()
@@ -70,11 +65,29 @@ func RunTest(testFn func(t testing.TB)) TestResult {
 	return TestResult{tb}
 }
 
-func newRecordingTB() *fakeTB {
+func newFakeTB() *fakeTB {
 	return &fakeTB{
 		completed: make(chan struct{}),
 		helpers:   make(map[uintptr]struct{}),
 	}
+}
+
+func (tb *fakeTB) Name() string {
+	return "faket-no-name"
+}
+
+// Cleaup and post-test methods.
+
+func (tb *fakeTB) Cleanup(f func()) {
+	callerPCs := getCallers(skipSelf)
+
+	tb.mu.Lock()
+	defer tb.mu.Unlock()
+
+	tb.cleanups = append(tb.cleanups, cleanup{
+		callers: callerPCs,
+		fn:      f,
+	})
 }
 
 func (tb *fakeTB) checkPanic() {
@@ -148,25 +161,53 @@ func (tb *fakeTB) runCleanups() {
 	}
 }
 
-func (tb *fakeTB) done() bool {
-	select {
-	case <-tb.completed:
-		return true
-	default:
-		return false
-	}
-}
+// Logging methods
 
-func (tb *fakeTB) Cleanup(f func()) {
-	callerPCs := getCallers(skipSelf)
-
+func (tb *fakeTB) Error(args ...interface{}) {
 	tb.mu.Lock()
 	defer tb.mu.Unlock()
 
-	tb.cleanups = append(tb.cleanups, cleanup{
-		callers: callerPCs,
-		fn:      f,
-	})
+	tb.logLocked(getCallers(withSelf), args...)
+	tb.failLocked()
+}
+
+func (tb *fakeTB) Errorf(format string, args ...interface{}) {
+	tb.mu.Lock()
+	defer tb.mu.Unlock()
+
+	tb.logfLocked(getCallers(withSelf), format, args...)
+	tb.failLocked()
+}
+
+func (tb *fakeTB) Fatal(args ...interface{}) {
+	tb.mu.Lock()
+	defer tb.mu.Unlock()
+
+	tb.logLocked(getCallers(withSelf), args...)
+	tb.failNowLocked()
+}
+
+func (tb *fakeTB) Fatalf(format string, args ...interface{}) {
+	tb.logfLocked(getCallers(withSelf), format, args...)
+	tb.FailNow()
+}
+
+func (tb *fakeTB) Log(args ...interface{}) {
+	tb.logLocked(getCallers(withSelf), args...)
+}
+
+func (tb *fakeTB) Logf(format string, args ...interface{}) {
+	tb.logfLocked(getCallers(withSelf), format, args...)
+}
+
+func (tb *fakeTB) Skip(args ...interface{}) {
+	tb.logLocked(getCallers(withSelf), args...)
+	tb.skipNowLocked()
+}
+
+func (tb *fakeTB) Skipf(format string, args ...interface{}) {
+	tb.logfLocked(getCallers(withSelf), format, args...)
+	tb.SkipNow()
 }
 
 func (tb *fakeTB) logfLocked(callers []uintptr, format string, args ...interface{}) {
@@ -190,21 +231,7 @@ func (tb *fakeTB) logLocked(callers []uintptr, args ...interface{}) {
 	})
 }
 
-func (tb *fakeTB) Error(args ...interface{}) {
-	tb.mu.Lock()
-	defer tb.mu.Unlock()
-
-	tb.logLocked(getCallers(withSelf), args...)
-	tb.failLocked()
-}
-
-func (tb *fakeTB) Errorf(format string, args ...interface{}) {
-	tb.mu.Lock()
-	defer tb.mu.Unlock()
-
-	tb.logfLocked(getCallers(withSelf), format, args...)
-	tb.failLocked()
-}
+// Fail-related methods.
 
 func (tb *fakeTB) Fail() {
 	tb.mu.Lock()
@@ -213,11 +240,11 @@ func (tb *fakeTB) Fail() {
 	tb.failLocked()
 }
 
-func (tb *fakeTB) failLocked() {
-	if tb.done() {
-		panic("Fail in goroutine after test completed")
-	}
-	tb.failed = true
+func (tb *fakeTB) Failed() bool {
+	tb.mu.Lock()
+	defer tb.mu.Unlock()
+
+	return tb.failed || tb.panicked
 }
 
 func (tb *fakeTB) FailNow() {
@@ -232,85 +259,23 @@ func (tb *fakeTB) failNowLocked() {
 	runtime.Goexit()
 }
 
-func (tb *fakeTB) Failed() bool {
-	tb.mu.Lock()
-	defer tb.mu.Unlock()
-
-	return tb.failed || tb.panicked
-}
-
-func (tb *fakeTB) Fatal(args ...interface{}) {
-	tb.mu.Lock()
-	defer tb.mu.Unlock()
-
-	tb.logLocked(getCallers(withSelf), args...)
-	tb.failNowLocked()
-}
-
-func (tb *fakeTB) Fatalf(format string, args ...interface{}) {
-	tb.logfLocked(getCallers(withSelf), format, args...)
-	tb.FailNow()
-}
-
-func (tb *fakeTB) Helper() {
-	callerPC := getCaller(skipSelf)
-	if callerPC == 0 {
-		// no callers, ignore.
-		// Note: real testing.TB would panic here, but we avoid panics in faket.
-		return
+func (tb *fakeTB) failLocked() {
+	if tb.done() {
+		panic("Fail in goroutine after test completed")
 	}
+	tb.failed = true
+}
 
-	tb.mu.Lock()
-	defer tb.mu.Unlock()
-
-	if _, ok := tb.helpers[callerPC]; !ok {
-		tb.helpers[callerPC] = struct{}{}
+func (tb *fakeTB) done() bool {
+	select {
+	case <-tb.completed:
+		return true
+	default:
+		return false
 	}
 }
 
-func (tb *fakeTB) Log(args ...interface{}) {
-	tb.logLocked(getCallers(withSelf), args...)
-}
-
-func (tb *fakeTB) Logf(format string, args ...interface{}) {
-	tb.logfLocked(getCallers(withSelf), format, args...)
-}
-
-func (tb *fakeTB) Name() string {
-	return "faket-no-name"
-}
-
-func (tb *fakeTB) Setenv(key, value string) {
-	prevVal, prevSet := os.LookupEnv(key)
-
-	if err := os.Setenv(key, value); err != nil {
-		// Match the error from stdlib.
-		tb.Fatalf("cannot set environment variable: %v", err)
-	}
-
-	tb.Cleanup(func() {
-		var err error
-		if !prevSet {
-			err = os.Unsetenv(key)
-		} else {
-			err = os.Setenv(key, prevVal)
-		}
-		if err != nil {
-			// This error is ignored by stdlib, but let's report it.
-			tb.Fatalf("cannot revert environment variable: %v", err)
-		}
-	})
-}
-
-func (tb *fakeTB) Skip(args ...interface{}) {
-	tb.logLocked(getCallers(withSelf), args...)
-	tb.skipNowLocked()
-}
-
-func (tb *fakeTB) Skipf(format string, args ...interface{}) {
-	tb.logfLocked(getCallers(withSelf), format, args...)
-	tb.SkipNow()
-}
+// Skip-related methods.
 
 func (tb *fakeTB) SkipNow() {
 	tb.mu.Lock()
@@ -328,8 +293,22 @@ func (tb *fakeTB) Skipped() bool {
 	return tb.skipped
 }
 
-func (tb *fakeTB) TempDir() string {
-	return "tmp"
+// Helper tracking methods.
+
+func (tb *fakeTB) Helper() {
+	callerPC := getCaller(skipSelf)
+	if callerPC == 0 {
+		// no callers, ignore.
+		// Note: real testing.TB would panic here, but we avoid panics in faket.
+		return
+	}
+
+	tb.mu.Lock()
+	defer tb.mu.Unlock()
+
+	if _, ok := tb.helpers[callerPC]; !ok {
+		tb.helpers[callerPC] = struct{}{}
+	}
 }
 
 func (tb *fakeTB) helperFuncs() []string {
@@ -345,12 +324,13 @@ func (tb *fakeTB) helperFuncs() []string {
 	return funcs
 }
 
+// Convert internal logEntry (using PCs) to exported Log (no PCs).
 func (tb *fakeTB) toLog(e logEntry) Log {
 	l := Log{
 		Message: e.entry,
 	}
-	skipSet := sliceutil.ToSet(tb.helperFuncs())
 
+	skipSet := sliceutil.ToSet(tb.helperFuncs())
 	// When a defer is triggered by a panic, it's added to the trace
 	// but panic is not shown as a log caller.
 	skipSet["runtime.gopanic"] = struct{}{}
@@ -387,32 +367,30 @@ func (tb *fakeTB) toLog(e logEntry) Log {
 	return l
 }
 
-func getCallers(skip int) []uintptr {
-	skip += 2 // skip runtime.Callers and self.
-	depth := 32
-	for {
-		pc := make([]uintptr, depth)
-		n := runtime.Callers(skip, pc)
-		if n < len(pc) {
-			return pc[:n]
+// Helpers which aren't core to testing.TB
+
+func (tb *fakeTB) Setenv(key, value string) {
+	prevVal, prevSet := os.LookupEnv(key)
+
+	if err := os.Setenv(key, value); err != nil {
+		// Match the error from stdlib.
+		tb.Fatalf("cannot set environment variable: %v", err)
+	}
+
+	tb.Cleanup(func() {
+		var err error
+		if !prevSet {
+			err = os.Unsetenv(key)
+		} else {
+			err = os.Setenv(key, prevVal)
 		}
-		depth *= 2
-	}
+		if err != nil {
+			// This error is ignored by stdlib, but let's report it.
+			tb.Fatalf("cannot revert environment variable: %v", err)
+		}
+	})
 }
 
-func getCaller(skip int) uintptr {
-	skip += 2 // skip runtime.Callers and this function
-	var pc [1]uintptr
-	n := runtime.Callers(skip, pc[:])
-	if n == 0 {
-		return 0
-	}
-
-	return pc[0]
-}
-
-func pcToFunction(pc uintptr) string {
-	frames := runtime.CallersFrames([]uintptr{pc})
-	f, _ := frames.Next()
-	return f.Function
+func (tb *fakeTB) TempDir() string {
+	return "tmp"
 }
