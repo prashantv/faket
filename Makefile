@@ -28,6 +28,3 @@ diff-testdata::
 endef
 $(foreach d,$(CMP_TEST_DIRS),$(eval $(call cmp_rule,$d)))
 
-.PHONY: lint
-lint:
-	golangci-lint run ./...
