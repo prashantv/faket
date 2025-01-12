@@ -24,10 +24,8 @@ jobs:
     - uses: jdx/mise-action@v2
 
 
-    - name: Set up Go ${{ matrix.go-version }}
+    - name: Set up Go
       uses: actions/setup-go@v5
-      with:
-        go-version: ${{ matrix.go-version }}
 
     - name: Verify Go version
       run: go version
