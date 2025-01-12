@@ -135,6 +135,11 @@
 {"Time":"2022-06-11T00:00:00.0Z","Action":"output","Package":"github.com/prashantv/faket","Test":"TestCmp_NestedCleanup/mix_nesting_and_skips","Output":"    --- SKIP: TestCmp_NestedCleanup/mix_nesting_and_skips (0.01s)\n"}
 {"Time":"2022-06-11T00:00:00.0Z","Action":"skip","Package":"github.com/prashantv/faket","Test":"TestCmp_NestedCleanup/mix_nesting_and_skips","Elapsed":0}
 {"Time":"2022-06-11T00:00:00.0Z","Action":"pass","Package":"github.com/prashantv/faket","Test":"TestCmp_NestedCleanup","Elapsed":0}
+{"Time":"2022-06-11T00:00:00.0Z","Action":"run","Package":"github.com/prashantv/faket","Test":"TestCmp_CleanupHelper"}
+{"Time":"2022-06-11T00:00:00.0Z","Action":"output","Package":"github.com/prashantv/faket","Test":"TestCmp_CleanupHelper","Output":"=== RUN   TestCmp_CleanupHelper\n"}
+{"Time":"2022-06-11T00:00:00.0Z","Action":"output","Package":"github.com/prashantv/faket","Test":"TestCmp_CleanupHelper","Output":"    integration_test.go:223: cleanup func log\n"}
+{"Time":"2022-06-11T00:00:00.0Z","Action":"output","Package":"github.com/prashantv/faket","Test":"TestCmp_CleanupHelper","Output":"--- PASS: TestCmp_CleanupHelper (0.01s)\n"}
+{"Time":"2022-06-11T00:00:00.0Z","Action":"pass","Package":"github.com/prashantv/faket","Test":"TestCmp_CleanupHelper","Elapsed":0}
 {"Time":"2022-06-11T00:00:00.0Z","Action":"output","Package":"github.com/prashantv/faket","Output":"FAIL\n"}
 {"Time":"2022-06-11T00:00:00.0Z","Action":"output","Package":"github.com/prashantv/faket","Output":"exit status 1\n"}
 {"Time":"2022-06-11T00:00:00.0Z","Action":"output","Package":"github.com/prashantv/faket","Output":"FAIL\tgithub.com/prashantv/faket\t0.01s\n"}

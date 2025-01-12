@@ -8,6 +8,11 @@ import (
 	"testing"
 )
 
+const (
+	withSelf = 0
+	skipSelf = 1
+)
+
 var _ testing.TB = (*fakeTB)(nil)
 
 type fakeTB struct {
@@ -17,7 +22,7 @@ type fakeTB struct {
 
 	mu sync.Mutex // protects all of the below fields.
 
-	cleanups []func()
+	cleanups []cleanup
 	helpers  map[uintptr]struct{}
 	Logs     []logEntry
 
@@ -26,14 +31,24 @@ type fakeTB struct {
 	skipped   bool
 	panicked  bool
 
+	// only set during a cleanup
+	cleanupRoot  string
+	curCleanupPC []uintptr
+
 	// panic metadata
 	recovered      any
 	recoverCallers []uintptr
 }
 
 type logEntry struct {
-	callers []uintptr // callers[0] is the tb function that logged
-	entry   string
+	callers        []uintptr // callers[0] is the tb function that logged
+	cleanupCallers []uintptr // for logs within a cleanup function
+	entry          string
+}
+
+type cleanup struct {
+	fn      func()
+	callers []uintptr
 }
 
 // RunTest runs the given test using a fake [testing.TB] and returns
@@ -63,7 +78,7 @@ func (tb *fakeTB) checkPanic() {
 	if r := recover(); r != nil {
 		tb.panicked = true
 		tb.recovered = r
-		tb.recoverCallers = getCallers()
+		tb.recoverCallers = getCallers(skipSelf)
 	}
 }
 
@@ -73,6 +88,17 @@ func (tb *fakeTB) postTest() {
 }
 
 func (tb *fakeTB) runCleanups() {
+	// Set cleanupRoot so log callers can use cleanup's callers.
+	if self := getCaller(withSelf); self != 0 {
+		f := pcToFunction(self)
+		func() {
+			tb.mu.Lock()
+			defer tb.mu.Unlock()
+
+			tb.cleanupRoot = f
+		}()
+	}
+
 	// If defer runs with !finished, then a cleanup must have panicked
 	// (which could be a Skip/Fatal). Continue running remaining cleanups.
 	var finished bool
@@ -85,25 +111,33 @@ func (tb *fakeTB) runCleanups() {
 	// Run cleanups in last-first order, similar to defers.
 	// Don't iterate by index, as the slice can grow (cleanups can add cleanups).
 	for {
-		cleanupFn := func() func() {
+		c, ok := func() (cleanup, bool) {
 			tb.mu.Lock()
 			defer tb.mu.Unlock()
 
 			if len(tb.cleanups) == 0 {
-				return nil
+				return cleanup{}, false
 			}
 
 			last := len(tb.cleanups) - 1
-			fn := tb.cleanups[last]
+			c := tb.cleanups[last]
 			tb.cleanups = tb.cleanups[:last]
-			return fn
+			return c, true
 		}()
-
-		if cleanupFn == nil {
+		if !ok {
 			finished = true
 			break
 		}
-		cleanupFn()
+
+		// Set the caller of cleanup for logs with all `t.Helper()` frames.
+		func() {
+			tb.mu.Lock()
+			defer tb.mu.Unlock()
+
+			tb.curCleanupPC = c.callers
+		}()
+
+		c.fn()
 	}
 }
 
@@ -117,10 +151,14 @@ func (tb *fakeTB) done() bool {
 }
 
 func (tb *fakeTB) Cleanup(f func()) {
+	callerPCs := getCallers(skipSelf)
 	tb.mu.Lock()
 	defer tb.mu.Unlock()
 
-	tb.cleanups = append(tb.cleanups, f)
+	tb.cleanups = append(tb.cleanups, cleanup{
+		callers: callerPCs,
+		fn:      f,
+	})
 }
 
 func (tb *fakeTB) logfLocked(callers []uintptr, format string, args ...interface{}) {
@@ -138,8 +176,9 @@ func (tb *fakeTB) logLocked(callers []uintptr, args ...interface{}) {
 	formatted = strings.TrimSuffix(formatted, "\n")
 
 	tb.Logs = append(tb.Logs, logEntry{
-		callers: callers,
-		entry:   formatted,
+		callers:        callers,
+		cleanupCallers: tb.curCleanupPC,
+		entry:          formatted,
 	})
 }
 
@@ -147,7 +186,7 @@ func (tb *fakeTB) Error(args ...interface{}) {
 	tb.mu.Lock()
 	defer tb.mu.Unlock()
 
-	tb.logLocked(getCallers(), args...)
+	tb.logLocked(getCallers(withSelf), args...)
 	tb.failLocked()
 }
 
@@ -155,7 +194,7 @@ func (tb *fakeTB) Errorf(format string, args ...interface{}) {
 	tb.mu.Lock()
 	defer tb.mu.Unlock()
 
-	tb.logfLocked(getCallers(), format, args...)
+	tb.logfLocked(getCallers(withSelf), format, args...)
 	tb.failLocked()
 }
 
@@ -196,39 +235,37 @@ func (tb *fakeTB) Fatal(args ...interface{}) {
 	tb.mu.Lock()
 	defer tb.mu.Unlock()
 
-	tb.logLocked(getCallers(), args...)
+	tb.logLocked(getCallers(withSelf), args...)
 	tb.failNowLocked()
 }
 
 func (tb *fakeTB) Fatalf(format string, args ...interface{}) {
-	tb.logfLocked(getCallers(), format, args...)
+	tb.logfLocked(getCallers(withSelf), format, args...)
 	tb.FailNow()
 }
 
 func (tb *fakeTB) Helper() {
-	tb.mu.Lock()
-	defer tb.mu.Unlock()
-
-	const skip = 2 // runtime.Callers + Helper
-	var pc [1]uintptr
-	n := runtime.Callers(skip, pc[:])
-	if n == 0 {
+	callerPC := getCaller(skipSelf)
+	if callerPC == 0 {
 		// no callers, ignore.
 		// Note: real testing.TB would panic here, but we avoid panics in faket.
 		return
 	}
 
-	if _, ok := tb.helpers[pc[0]]; !ok {
-		tb.helpers[pc[0]] = struct{}{}
+	tb.mu.Lock()
+	defer tb.mu.Unlock()
+
+	if _, ok := tb.helpers[callerPC]; !ok {
+		tb.helpers[callerPC] = struct{}{}
 	}
 }
 
 func (tb *fakeTB) Log(args ...interface{}) {
-	tb.logLocked(getCallers(), args...)
+	tb.logLocked(getCallers(withSelf), args...)
 }
 
 func (tb *fakeTB) Logf(format string, args ...interface{}) {
-	tb.logfLocked(getCallers(), format, args...)
+	tb.logfLocked(getCallers(withSelf), format, args...)
 }
 
 func (tb *fakeTB) Name() string {
@@ -240,12 +277,12 @@ func (tb *fakeTB) Setenv(key, value string) {
 }
 
 func (tb *fakeTB) Skip(args ...interface{}) {
-	tb.logLocked(getCallers(), args...)
+	tb.logLocked(getCallers(withSelf), args...)
 	tb.skipNowLocked()
 }
 
 func (tb *fakeTB) Skipf(format string, args ...interface{}) {
-	tb.logfLocked(getCallers(), format, args...)
+	tb.logfLocked(getCallers(withSelf), format, args...)
 	tb.SkipNow()
 }
 
@@ -269,15 +306,32 @@ func (tb *fakeTB) TempDir() string {
 	return "tmp"
 }
 
-func getCallers() []uintptr {
+func getCallers(skip int) []uintptr {
+	skip += 2 // skip runtime.Callers and self.
 	depth := 32
 	for {
 		pc := make([]uintptr, depth)
-		// runtime.Callers returns itself, so skip that, and this function.
-		n := runtime.Callers(2, pc)
+		n := runtime.Callers(skip, pc)
 		if n < len(pc) {
 			return pc[:n]
 		}
 		depth *= 2
 	}
+}
+
+func getCaller(skip int) uintptr {
+	skip += 2 // skip runtime.Callers and this function
+	var pc [1]uintptr
+	n := runtime.Callers(skip, pc[:])
+	if n == 0 {
+		return 0
+	}
+
+	return pc[0]
+}
+
+func pcToFunction(pc uintptr) string {
+	frames := runtime.CallersFrames([]uintptr{pc})
+	f, _ := frames.Next()
+	return f.Function
 }
