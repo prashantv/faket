@@ -57,8 +57,6 @@ func TestStrContainsInOrder(t *testing.T) {
    * E.g., ensuring skips within cleanups work the same way.
  * Panic handling.
 
-There are still some features to implement, see [TODO](TODO.md).
-
 ## Installation
 
 `go get -u github.com/prashantv/faket`
