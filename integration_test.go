@@ -224,3 +224,53 @@ func helperWithCleanup(t testing.TB) {
 		t.Log("cleanup func log")
 	})
 }
+
+func TestCmp_Setenv(t *testing.T) {
+	const k = "FAKET_CMP_SETENV_TEST_KEY"
+
+	// k shouldn't be set initially, or tests will fail.
+	_, ok := os.LookupEnv(k)
+	if ok {
+		t.Fatalf("environment key %v cannot be set for test to run", k)
+	}
+
+	tests := []struct {
+		name  string
+		setup func(t testing.TB)
+	}{
+		{
+			name:  "unset initially",
+			setup: func(t testing.TB) {},
+		},
+		{
+			name: "set initially",
+			setup: func(t testing.TB) {
+				if err := os.Setenv(k, "initial"); err != nil {
+					t.Fatal("Setenv err", err)
+				}
+				t.Cleanup(func() {
+					if err := os.Unsetenv(k); err != nil {
+						t.Fatal("Unsetenv err", err)
+					}
+				})
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			cmptest.Compare(t, func(t testing.TB) {
+				t.Cleanup(func() {
+					v, ok := os.LookupEnv(k)
+					t.Logf("LookupEnv in cleanup got %v %v", v, ok)
+				})
+
+				t.Setenv(k, "s1")
+				t.Log("Getenv s1:", os.Getenv(k))
+
+				t.Setenv(k, "s2")
+				t.Log("Getenv s2:", os.Getenv(k))
+			})
+		})
+	}
+}

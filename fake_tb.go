@@ -2,6 +2,7 @@ package faket
 
 import (
 	"fmt"
+	"os"
 	"runtime"
 	"strings"
 	"sync"
@@ -280,7 +281,25 @@ func (tb *fakeTB) Name() string {
 }
 
 func (tb *fakeTB) Setenv(key, value string) {
-	// TODO: Set the environment, but clear it on cleanup
+	prevVal, prevSet := os.LookupEnv(key)
+
+	if err := os.Setenv(key, value); err != nil {
+		// Match the error from stdlib.
+		tb.Fatalf("cannot set environment variable: %v", err)
+	}
+
+	tb.Cleanup(func() {
+		var err error
+		if !prevSet {
+			err = os.Unsetenv(key)
+		} else {
+			err = os.Setenv(key, prevVal)
+		}
+		if err != nil {
+			// This error is ignored by stdlib, but let's report it.
+			tb.Fatalf("cannot revert environment variable: %v", err)
+		}
+	})
 }
 
 func (tb *fakeTB) Skip(args ...interface{}) {
