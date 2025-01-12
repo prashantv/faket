@@ -217,3 +217,18 @@ func TestCmp_NestedCleanup(t *testing.T) {
 		})
 	}
 }
+
+func TestCmp_CleanupHelper(t *testing.T) {
+	cmptest.Compare(t, func(t testing.TB) {
+		helperWithCleanup(t)
+	})
+}
+
+func helperWithCleanup(t testing.TB) {
+	t.Helper()
+
+	t.Cleanup(func() {
+		t.Helper()
+		t.Log("cleanup func log")
+	})
+}

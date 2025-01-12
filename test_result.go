@@ -66,7 +66,7 @@ func (r TestResult) Logs() string {
 func (r TestResult) LogsWithCaller() []string {
 	logs := make([]string, 0, len(r.res.Logs))
 	for _, l := range r.res.Logs {
-		ci := getCallerInfo(l.callers, r.Helpers())
+		ci := getCallerInfo(l, r.res.cleanupRoot, r.Helpers())
 		line := fmt.Sprintf("%s:%d: %v", filepath.Base(ci.callerFile), ci.callerLine, l.entry)
 		logs = append(logs, line)
 	}
@@ -78,10 +78,8 @@ func (r TestResult) LogsWithCaller() []string {
 func (r TestResult) Helpers() []string {
 	funcs := make([]string, 0, len(r.res.helpers))
 	for pc := range r.res.helpers {
-		frames := runtime.CallersFrames([]uintptr{pc})
-		f, _ := frames.Next()
-		if f != (runtime.Frame{}) {
-			funcs = append(funcs, f.Function)
+		if fn := pcToFunction(pc); fn != "" {
+			funcs = append(funcs, fn)
 		}
 	}
 	sort.Strings(funcs)
@@ -95,7 +93,7 @@ type callerInfo struct {
 	callerLine int
 }
 
-func getCallerInfo(callers []uintptr, skipFuncs []string) callerInfo {
+func getCallerInfo(ent logEntry, cleanupRoot string, skipFuncs []string) callerInfo {
 	skipSet := make(map[string]struct{})
 	for _, f := range skipFuncs {
 		skipSet[f] = struct{}{}
@@ -105,7 +103,7 @@ func getCallerInfo(callers []uintptr, skipFuncs []string) callerInfo {
 	// but panic is not shown as a log caller.
 	skipSet["runtime.gopanic"] = struct{}{}
 
-	frames := runtime.CallersFrames(callers)
+	frames := runtime.CallersFrames(ent.callers)
 
 	f, _ := frames.Next()
 	if f == (runtime.Frame{}) {
@@ -122,6 +120,12 @@ func getCallerInfo(callers []uintptr, skipFuncs []string) callerInfo {
 		f, _ = frames.Next()
 		if f == (runtime.Frame{}) {
 			return ci
+		}
+
+		// If we hit the cleanup root, then use the callers of the t.Cleanup.
+		if f.Function == cleanupRoot {
+			frames = runtime.CallersFrames(ent.cleanupCallers)
+			continue
 		}
 
 		_, skip = skipSet[f.Function]
