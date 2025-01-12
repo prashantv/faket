@@ -22,7 +22,8 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - uses: jdx/mise-action@v2
-
+      with:
+        cache_key_prefix: mise-v0-${{ matrix.mise-env }}
 
     - name: Set up Go
       uses: actions/setup-go@v5
