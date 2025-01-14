@@ -62,8 +62,7 @@ func TestCmp_SkipThenFail(t *testing.T) {
 func TestCmp_Fatal(t *testing.T) {
 	cmptest.Compare(t, func(t testing.TB) {
 		t.Log("pre-fatal")
-		//nolint:revive // skip unreachable skip
-		t.Fatal("fatal")
+		t.Fatal("fatal") //nolint:revive // skip unreachable skip
 		t.Log("post-fatal")
 	})
 }
@@ -315,5 +314,29 @@ func TestCmp_TmpDir(t *testing.T) {
 		createFile(d2, "f3")
 		listFiles("d1 after create", d1)
 		listFiles("d2 after create", d2)
+	})
+}
+
+func TestCmp_Fatalf(t *testing.T) {
+	cmptest.Compare(t, func(t testing.TB) {
+		t.Error("pre-fail log")
+		t.Fatalf("log: %v", "fatal") //nolint:revive // skip unreachable skip
+		t.Error("post-fail log")
+	})
+}
+
+func TestCmp_FailNow(t *testing.T) {
+	cmptest.Compare(t, func(t testing.TB) {
+		t.Error("pre-fail log")
+		t.FailNow() //nolint:revive // skip unreachable skip
+		t.Error("post-fail log")
+	})
+}
+
+func TestCmp_SkipNow(t *testing.T) {
+	cmptest.Compare(t, func(t testing.TB) {
+		t.Error("pre-skip log")
+		t.SkipNow()
+		t.Error("post-skip log")
 	})
 }
