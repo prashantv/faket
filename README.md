@@ -1,4 +1,5 @@
-# faket [![GoDoc][doc-img]][doc] [![Build Status][ci-img]][ci]
+# faket [![GoDoc][doc-img]][doc] [![Build Status][ci-img]][ci] [![Coverage][codecov-img]][codecov]
+
 
 Are your test helpers correct -- test them with `faket`.
 
@@ -71,3 +72,5 @@ This library is still in development, and is not API stable.
 [doc]: https://pkg.go.dev/github.com/prashantv/faket
 [ci-img]: https://github.com/prashantv/faket/actions/workflows/go.yml/badge.svg
 [ci]: https://github.com/prashantv/faket/actions/workflows/go.yml
+[codecov-img]: https://codecov.io/github/prashantv/faket/graph/badge.svg?token=RUXXMHOX4Q
+[codecov]: https://codecov.io/github/prashantv/faket

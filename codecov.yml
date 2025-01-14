@@ -1,0 +1,4 @@
+comment: false
+ignore:
+  # test runner logic for integration tests against stdlib
+  - 'internal/cmptest/*.go'

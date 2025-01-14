@@ -10,6 +10,10 @@ run = "go build ./..."
 description = "Run Go tests"
 run = "go test ./..."
 
+[tasks.cover]
+description = "Run Go tests with coverage"
+run = "go test -coverprofile cover.out ./..."
+
 [tasks.lint]
 description = "Run golangci-lint"
 run = "golangci-lint run ./..."
