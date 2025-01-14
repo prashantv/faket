@@ -25,3 +25,19 @@ func TestFakeT_FailSkip(t *testing.T) {
 	want.Equal(t, "Failed", tr.Failed(), true)
 	want.Equal(t, "FailedAndSkipped", tr.FailedAndSkipped(), true)
 }
+
+func TestFakeT_Helpers(t *testing.T) {
+	tr := RunTest(func(t testing.TB) {
+		testHelper1(t)
+		testHelper2(t)
+		testHelper3(t)
+	})
+	want.DeepEqual(t, "Helpers", tr.Helpers(), []string{
+		"github.com/prashantv/faket.testHelper1",
+		"github.com/prashantv/faket.testHelper3",
+	})
+}
+
+func testHelper1(t testing.TB) { t.Helper() }
+func testHelper2(t testing.TB) {}
+func testHelper3(t testing.TB) { t.Helper() }
