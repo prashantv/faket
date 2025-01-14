@@ -37,8 +37,21 @@ jobs:
       run: mise run test
 
     - name: Verify golden files
-      if: env.GO_NOT_LATEST == 'false'
+      if: env.MISE_ENV == 'stable'
       run: make diff-testdata
+
+    ## Generate coverage for CodeCov
+    - name: Generate coverage
+      run: mise run cover
+
+    - name: Upload to CodeCov
+      uses: codecov/codecov-action@v5
+      with:
+        disable_search: true
+        files: ./cover.out
+      env:
+        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+
 
   lint:
     name: lint
