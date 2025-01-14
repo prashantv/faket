@@ -6,38 +6,80 @@ import (
 	"github.com/prashantv/faket/internal/want"
 )
 
-func TestMustPass(t *testing.T) {
-	passTR := RunTest(func(testing.TB) {})
-	failTR := RunTest(func(t testing.TB) {
-		t.Error("failed")
-	})
+func TestMustHelpers(t *testing.T) {
+	tests := []struct {
+		name      string
+		fn        func(testing.TB)
+		mustPass  bool
+		mustFail  bool
+		mustPanic bool
+	}{
+		{
+			name:     "passing test",
+			fn:       func(testing.TB) {},
+			mustPass: true,
+		},
+		{
+			name: "failing test",
+			fn: func(t testing.TB) {
+				t.Error("failed with Error")
+			},
+			mustFail: true,
+		},
+		{
+			name: "panic test",
+			fn: func(testing.TB) {
+				panic("failed with panic")
+			},
+			mustFail:  true,
+			mustPanic: true,
+		},
+	}
 
-	t.Run("MustPass on passing test", func(t *testing.T) {
-		passTR.MustPass(t)
-	})
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			fnTR := RunTest(tt.fn)
 
-	t.Run("MustPass on failing test", func(t *testing.T) {
-		tr := RunTest(func(t testing.TB) {
-			failTR.MustPass(t)
+			t.Run("MustPass", func(t *testing.T) {
+				tr := RunTest(func(t testing.TB) {
+					fnTR.MustPass(t)
+				})
+				want.Equal(t, "Failed", tr.Failed(), !tt.mustPass)
+			})
+
+			t.Run("MustFail", func(t *testing.T) {
+				tr := RunTest(func(t testing.TB) {
+					fnTR.MustFail(t, "failed")
+				})
+				want.Equal(t, "Failed", tr.Failed(), !tt.mustFail)
+			})
+
+			if tt.mustFail {
+				t.Run("MustFail wrong message", func(t *testing.T) {
+					tr := RunTest(func(t testing.TB) {
+						fnTR.MustFail(t, "unknown")
+					})
+					want.Equal(t, "Failed", tr.Failed(), true)
+					want.Contains(t, "Message", tr.Logs().String(), "missing expected log")
+				})
+			}
+
+			t.Run("MustPanic", func(t *testing.T) {
+				tr := RunTest(func(t testing.TB) {
+					fnTR.MustPanic(t, "panic")
+				})
+				want.Equal(t, "Failed", tr.Failed(), !tt.mustPanic)
+			})
+
+			if tt.mustPanic {
+				t.Run("MustPanic wrong contains", func(t *testing.T) {
+					tr := RunTest(func(t testing.TB) {
+						fnTR.MustPanic(t, "unknown")
+					})
+					want.Equal(t, "Failed", tr.Failed(), true)
+					want.Contains(t, "Message", tr.Logs().String(), "panic string doesn't contain")
+				})
+			}
 		})
-		want.Equal(t, "Failed", tr.Failed(), true)
-	})
-
-	t.Run("MustFail on passing test", func(t *testing.T) {
-		tr := RunTest(func(t testing.TB) {
-			passTR.MustFail(t, "failed")
-		})
-		want.Equal(t, "Failed", tr.Failed(), true)
-	})
-
-	t.Run("MustFail on failed test", func(t *testing.T) {
-		failTR.MustFail(t, "failed")
-	})
-
-	t.Run("MustFail with wrong message", func(t *testing.T) {
-		tr := RunTest(func(t testing.TB) {
-			failTR.MustFail(t, "incorrect message")
-		})
-		want.Equal(t, "Failed", tr.Failed(), true)
-	})
+	}
 }

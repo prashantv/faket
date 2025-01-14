@@ -118,7 +118,16 @@ func CompareOpts(t *testing.T, opts Opts, f func(t testing.TB)) {
 		}
 	}
 
+	logs := res.Logs()
+	if res.Panicked() {
+		// Drop the "panic:" line
+		last := len(logs) - 1
+		if strings.HasPrefix(logs[last].Message, "panic:") {
+			logs = logs[:last]
+		}
+	}
+
 	want.Equal(t, "result event", resultEvent, true)
-	want.Equal(t, "log output", res.Logs().String(), wantOutput.String())
+	want.Equal(t, "log output", logs.String(), wantOutput.String())
 	want.Equal(t, "panicked", res.Panicked(), opts.WantPanic)
 }
