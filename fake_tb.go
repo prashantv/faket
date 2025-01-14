@@ -98,6 +98,7 @@ func (tb *fakeTB) checkPanic() {
 		tb.panicked = true
 		tb.recovered = r
 		tb.recoverCallers = getCallers(skipSelf)
+		tb.logfLocked(tb.recoverCallers, "panic: %v", r)
 	}
 }
 
