@@ -42,7 +42,7 @@ func (r TestResult) Panicked() bool {
 //
 // If a test failed before it was skipped, then Failed takes precedence
 // and Skipped returns false. To check if the test was skipped after a failure
-// see [FailedAndSkipped].
+// see [TestResult.FailedAndSkipped].
 func (r TestResult) Skipped() bool {
 	// Above behaviour is for consistency with testing.TB, from SkipNow docs:
 	// > If a test fails (see Error, Errorf, Fail) and is then skipped,
@@ -55,8 +55,8 @@ func (r TestResult) Skipped() bool {
 
 // FailedAndSkipped reports if a test failed, and then was skipped.
 //
-// See [Skipped] for more details for how this differs from using
-// [Failed] and [Skipped].
+// See [TestResult.Skipped] for more details for how this differs from using
+// [TestResult.Failed] and [TestResult.Skipped].
 func (r TestResult) FailedAndSkipped() bool {
 	return r.res.Failed() && r.res.Skipped()
 }
