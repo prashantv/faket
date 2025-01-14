@@ -340,3 +340,15 @@ func TestCmp_SkipNow(t *testing.T) {
 		t.Error("post-skip log")
 	})
 }
+
+func TestCmp_Fail(t *testing.T) {
+	cmptest.Compare(t, func(t testing.TB) {
+		t.Fail()
+	})
+}
+
+func TestCmp_Skipf(t *testing.T) {
+	cmptest.Compare(t, func(t testing.TB) {
+		t.Skipf("skip %s", "test")
+	})
+}

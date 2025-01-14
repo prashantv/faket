@@ -15,3 +15,13 @@ func TestFakeT_Success(t *testing.T) {
 
 	want.DeepEqual(t, "Logs", res.Logs().Messages(), []string{"this is log 1"})
 }
+
+func TestFakeT_FailSkip(t *testing.T) {
+	tr := RunTest(func(t testing.TB) {
+		t.Error("about to skip")
+		t.Skipf("skip %s", t.Name())
+	})
+	want.Equal(t, "Skipped", tr.Skipped(), false)
+	want.Equal(t, "Failed", tr.Failed(), true)
+	want.Equal(t, "FailedAndSkipped", tr.FailedAndSkipped(), true)
+}
