@@ -3,6 +3,7 @@ package faket
 import (
 	"testing"
 
+	"github.com/prashantv/faket/internal/syncutil"
 	"github.com/prashantv/faket/internal/want"
 )
 
@@ -41,3 +42,15 @@ func TestFakeT_Helpers(t *testing.T) {
 func testHelper1(t testing.TB) { t.Helper() }
 func testHelper2(t testing.TB) {}
 func testHelper3(t testing.TB) { t.Helper() }
+
+func TestFakeT_PanicRace(t *testing.T) {
+	syncutil.RunN(100, func(int) {
+		for i := 0; i < 100; i++ {
+			res := RunTest(func(t testing.TB) {
+				panic("panicked")
+			})
+			want.Equal(t, "Failed", res.Failed(), true)
+			want.Equal(t, "Panicked", res.Panicked(), true)
+		}
+	})
+}
