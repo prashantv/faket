@@ -55,8 +55,9 @@ func RunTest(testFn func(t testing.TB)) TestResult {
 	tb := newFakeTB()
 
 	go func() {
+		defer close(tb.completed)
 		defer tb.checkPanic()
-		defer tb.postTest()
+		defer tb.runCleanups()
 
 		testFn(tb)
 	}()
@@ -100,12 +101,6 @@ func (tb *fakeTB) checkPanic() {
 		tb.recoverCallers = getCallers(skipSelf)
 		tb.logfLocked(tb.recoverCallers, "panic: %v", r)
 	}
-}
-
-func (tb *fakeTB) postTest() {
-	defer close(tb.completed)
-
-	tb.runCleanups()
 }
 
 func (tb *fakeTB) runCleanups() {
