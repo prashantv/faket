@@ -20,9 +20,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-    - uses: jdx/mise-action@v2
-      with:
-        cache_key_prefix: mise-v0-${{ matrix.mise-env }}
+    - uses: prashantv/mise-action@mise-env-cache-key
 
     - name: Set up Go
       uses: actions/setup-go@v5
@@ -60,7 +58,7 @@ jobs:
       MISE_ENV: stable
     steps:
     - uses: actions/checkout@v4
-    - uses: jdx/mise-action@v2
+    - uses: prashantv/mise-action@mise-env-cache-key
       with:
         cache_key_prefix: mise-v0-stable
     - name: lint
