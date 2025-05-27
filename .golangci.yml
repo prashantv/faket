@@ -1,35 +1,29 @@
+version: "2"
 linters:
   # Manually specify linters so we're not affected to changing defaults.
-  disable-all: true
+  default: none
   enable:
-    # golangci-lint defaults:
     - errcheck
-    - gosimple
     - govet
     - ineffassign
+    - nolintlint
+    - revive
     - staticcheck
     - unused
-
-    # Our own extras:
+  settings:
+    govet:
+      # These govet checks are disabled by default, but they're useful.
+      enable:
+        - niliness
+        - stringintcov
+        - structtag
+  exclusions:
+    rules:
+      # Don't warn on unused parameters.
+      # # Parameter names are useful; replacing them with '_' is undesirable.
+      - linters: [revive]
+        text: 'unused-parameter: parameter \S+ seems to be unused, consider removing or renaming it as _'
+formatters:
+  enable:
     - gofumpt
     - goimports
-    - nolintlint # lints nolint directives
-    - revive
-
-linters-settings:
-  govet:
-    # These govet checks are disabled by default, but they're useful.
-    enable:
-      - niliness
-      - stringintcov
-      - structtag
-
-issues:
-  # disable default excludes, such as doc-comments for exported methods.
-  exclude-use-default: false
-
-  exclude-rules:
-    # Don't warn on unused parameters.
-    # Parameter names are useful; replacing them with '_' is undesirable.
-    - linters: [revive]
-      text: 'unused-parameter: parameter \S+ seems to be unused, consider removing or renaming it as _'
