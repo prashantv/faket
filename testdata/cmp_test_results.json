@@ -1,4 +1,19 @@
 {"Time":"2022-06-11T00:00:00.0Z","Action":"start","Package":"github.com/prashantv/faket"}
+{"Time":"2022-06-11T00:00:00.0Z","Action":"run","Package":"github.com/prashantv/faket","Test":"TestCmp_Chdir"}
+{"Time":"2022-06-11T00:00:00.0Z","Action":"output","Package":"github.com/prashantv/faket","Test":"TestCmp_Chdir","Output":"=== RUN   TestCmp_Chdir\n"}
+{"Time":"2022-06-11T00:00:00.0Z","Action":"run","Package":"github.com/prashantv/faket","Test":"TestCmp_Chdir/to_non-existent"}
+{"Time":"2022-06-11T00:00:00.0Z","Action":"output","Package":"github.com/prashantv/faket","Test":"TestCmp_Chdir/to_non-existent","Output":"=== RUN   TestCmp_Chdir/to_non-existent\n"}
+{"Time":"2022-06-11T00:00:00.0Z","Action":"output","Package":"github.com/prashantv/faket","Test":"TestCmp_Chdir/to_non-existent","Output":"    testing.go:1358: chdir ./does/not/exist: no such file or directory\n"}
+{"Time":"2022-06-11T00:00:00.0Z","Action":"run","Package":"github.com/prashantv/faket","Test":"TestCmp_Chdir/success"}
+{"Time":"2022-06-11T00:00:00.0Z","Action":"output","Package":"github.com/prashantv/faket","Test":"TestCmp_Chdir/success","Output":"=== RUN   TestCmp_Chdir/success\n"}
+{"Time":"2022-06-11T00:00:00.0Z","Action":"output","Package":"github.com/prashantv/faket","Test":"TestCmp_Chdir/success","Output":"    integration_1_24_test.go:51: wd is /path/to/faket/testdata\n"}
+{"Time":"2022-06-11T00:00:00.0Z","Action":"output","Package":"github.com/prashantv/faket","Test":"TestCmp_Chdir/success","Output":"    integration_1_24_test.go:52: PWD is /path/to/faket/testdata\n"}
+{"Time":"2022-06-11T00:00:00.0Z","Action":"output","Package":"github.com/prashantv/faket","Test":"TestCmp_Chdir","Output":"--- FAIL: TestCmp_Chdir (0.01s)\n"}
+{"Time":"2022-06-11T00:00:00.0Z","Action":"output","Package":"github.com/prashantv/faket","Test":"TestCmp_Chdir/to_non-existent","Output":"    --- FAIL: TestCmp_Chdir/to_non-existent (0.01s)\n"}
+{"Time":"2022-06-11T00:00:00.0Z","Action":"fail","Package":"github.com/prashantv/faket","Test":"TestCmp_Chdir/to_non-existent","Elapsed":0}
+{"Time":"2022-06-11T00:00:00.0Z","Action":"output","Package":"github.com/prashantv/faket","Test":"TestCmp_Chdir/success","Output":"    --- PASS: TestCmp_Chdir/success (0.01s)\n"}
+{"Time":"2022-06-11T00:00:00.0Z","Action":"pass","Package":"github.com/prashantv/faket","Test":"TestCmp_Chdir/success","Elapsed":0}
+{"Time":"2022-06-11T00:00:00.0Z","Action":"fail","Package":"github.com/prashantv/faket","Test":"TestCmp_Chdir","Elapsed":0}
 {"Time":"2022-06-11T00:00:00.0Z","Action":"run","Package":"github.com/prashantv/faket","Test":"TestCmp_Success"}
 {"Time":"2022-06-11T00:00:00.0Z","Action":"output","Package":"github.com/prashantv/faket","Test":"TestCmp_Success","Output":"=== RUN   TestCmp_Success\n"}
 {"Time":"2022-06-11T00:00:00.0Z","Action":"output","Package":"github.com/prashantv/faket","Test":"TestCmp_Success","Output":"    integration_test.go:20: log1\n"}
