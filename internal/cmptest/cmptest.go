@@ -63,7 +63,8 @@ func Compare(t *testing.T, f func(testing.TB)) {
 
 // Opts are options for comparing faket to a real test run.
 type Opts struct {
-	WantPanic bool
+	WantPanic  bool
+	LogReplace func(string) string
 }
 
 // CompareOpts is the same as Compare, but supports options for customizing comparisons.
@@ -127,7 +128,14 @@ func CompareOpts(t *testing.T, opts Opts, f func(t testing.TB)) {
 		}
 	}
 
+	wantLogs := wantOutput.String()
+	gotLogs := logs.String()
+	if opts.LogReplace != nil {
+		wantLogs = opts.LogReplace(wantLogs)
+		gotLogs = opts.LogReplace(gotLogs)
+	}
+
 	want.Equal(t, "result event", resultEvent, true)
-	want.Equal(t, "log output", logs.String(), wantOutput.String())
+	want.Equal(t, "log output", gotLogs, wantLogs)
 	want.Equal(t, "panicked", res.Panicked(), opts.WantPanic)
 }

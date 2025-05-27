@@ -37,7 +37,7 @@ func TestTBCoverage(t *testing.T) {
 
 		mn := m.Name
 		// TODO(prashant): Implement new methods added in 1.24 before release.
-		if mn == "Chdir" || mn == "Context" {
+		if mn == "Context" {
 			continue
 		}
 		if _, ok := ftSet[mn]; !ok {

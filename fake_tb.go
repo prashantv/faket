@@ -3,6 +3,7 @@ package faket
 import (
 	"fmt"
 	"os"
+	"path/filepath"
 	"runtime"
 	"strings"
 	"sync"
@@ -414,4 +415,38 @@ func (tb *fakeTB) TempDir() string {
 	})
 
 	return d
+}
+
+func (tb *fakeTB) Chdir(dir string) {
+	oldWd, err := os.Open(".")
+	if err != nil {
+		// Match stdlib error.
+		tb.Fatal(err)
+	}
+	if err := os.Chdir(dir); err != nil {
+		// Match stdlib error.
+		tb.Fatal(err)
+	}
+
+	// Similar to stdlib, on POSIX, set PWD.
+	switch runtime.GOOS {
+	case "windows", "plan9":
+		// Windows and Plan 9 do not use the PWD variable.
+	default:
+		if !filepath.IsAbs(dir) {
+			dir, err = os.Getwd()
+			if err != nil {
+				tb.Fatal(err)
+			}
+		}
+		tb.Setenv("PWD", dir)
+	}
+
+	tb.Cleanup(func() {
+		defer oldWd.Close() //nolint:errcheck // best-effort close to avoid leaks.
+		if err := oldWd.Chdir(); err != nil {
+			// Note: The stdlib implementation panics here, but we avoid panics.
+			tb.Errorf("ChDir failed to ChDir to original directory: %v", err)
+		}
+	})
 }
