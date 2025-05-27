@@ -1,6 +1,7 @@
 package faket
 
 import (
+	"context"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -18,6 +19,9 @@ type fakeTB struct {
 	// embedded to include testing.TB.private, which we can't implement.
 	// Since this is an interface, unimplemented methods will panic.
 	testing.TB
+
+	ctx       context.Context
+	cancelCtx context.CancelFunc
 
 	mu sync.Mutex // protects all of the below fields.
 
@@ -68,7 +72,10 @@ func RunTest(testFn func(t testing.TB)) TestResult {
 }
 
 func newFakeTB() *fakeTB {
+	ctx, cancel := context.WithCancel(context.Background())
 	return &fakeTB{
+		ctx:       ctx,
+		cancelCtx: cancel,
 		completed: make(chan struct{}),
 		helpers:   make(map[uintptr]struct{}),
 	}
@@ -105,6 +112,8 @@ func (tb *fakeTB) checkPanic() {
 }
 
 func (tb *fakeTB) runCleanups() {
+	tb.cancelCtx()
+
 	// Set cleanupRoot so log callers can use cleanup's callers.
 	if self := getCaller(withSelf); self != 0 {
 		f := pcToFunction(self)
@@ -449,4 +458,8 @@ func (tb *fakeTB) Chdir(dir string) {
 			tb.Errorf("ChDir failed to ChDir to original directory: %v", err)
 		}
 	})
+}
+
+func (tb *fakeTB) Context() context.Context {
+	return tb.ctx
 }

@@ -19,7 +19,7 @@ func TestCmp_Chdir(t *testing.T) {
 		opts := cmptest.Opts{
 			LogReplace: func(s string) string {
 				s = regexp.MustCompile("testing.go:[0-9]+").ReplaceAllString(s, "testing.go:Chdir")
-				s = strings.ReplaceAll(s, "fake_tb.go:428", "testing.go:Chdir")
+				s = regexp.MustCompile("fake_tb.go:[0-9]+").ReplaceAllString(s, "testing.go:Chdir")
 				return s
 			},
 		}
@@ -57,4 +57,18 @@ func TestCmp_Chdir(t *testing.T) {
 	postPWD := os.Getenv("PWD")
 	want.Equal(t, "Getwd", postWD, initialWD)
 	want.Equal(t, "PWD", postPWD, initialPWD)
+}
+
+func TestCmp_Context(t *testing.T) {
+	cmptest.Compare(t, func(t testing.TB) {
+		ctx := t.Context()
+		t.Log("no ctx.Err initially", ctx.Err())
+
+		deadline, ok := ctx.Deadline()
+		t.Log("ctx has no deadline", ok, deadline)
+
+		t.Cleanup(func() {
+			t.Log("but err in cleanup", ctx.Err())
+		})
+	})
 }

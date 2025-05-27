@@ -14,6 +14,13 @@
 {"Time":"2022-06-11T00:00:00.0Z","Action":"output","Package":"github.com/prashantv/faket","Test":"TestCmp_Chdir/success","Output":"    --- PASS: TestCmp_Chdir/success (0.01s)\n"}
 {"Time":"2022-06-11T00:00:00.0Z","Action":"pass","Package":"github.com/prashantv/faket","Test":"TestCmp_Chdir/success","Elapsed":0}
 {"Time":"2022-06-11T00:00:00.0Z","Action":"fail","Package":"github.com/prashantv/faket","Test":"TestCmp_Chdir","Elapsed":0}
+{"Time":"2022-06-11T00:00:00.0Z","Action":"run","Package":"github.com/prashantv/faket","Test":"TestCmp_Context"}
+{"Time":"2022-06-11T00:00:00.0Z","Action":"output","Package":"github.com/prashantv/faket","Test":"TestCmp_Context","Output":"=== RUN   TestCmp_Context\n"}
+{"Time":"2022-06-11T00:00:00.0Z","Action":"output","Package":"github.com/prashantv/faket","Test":"TestCmp_Context","Output":"    integration_1_24_test.go:65: no ctx.Err initially \u003cnil\u003e\n"}
+{"Time":"2022-06-11T00:00:00.0Z","Action":"output","Package":"github.com/prashantv/faket","Test":"TestCmp_Context","Output":"    integration_1_24_test.go:68: ctx has no deadline false 0001-01-01 00:00:00 +0000 UTC\n"}
+{"Time":"2022-06-11T00:00:00.0Z","Action":"output","Package":"github.com/prashantv/faket","Test":"TestCmp_Context","Output":"    integration_1_24_test.go:71: but err in cleanup context canceled\n"}
+{"Time":"2022-06-11T00:00:00.0Z","Action":"output","Package":"github.com/prashantv/faket","Test":"TestCmp_Context","Output":"--- PASS: TestCmp_Context (0.01s)\n"}
+{"Time":"2022-06-11T00:00:00.0Z","Action":"pass","Package":"github.com/prashantv/faket","Test":"TestCmp_Context","Elapsed":0}
 {"Time":"2022-06-11T00:00:00.0Z","Action":"run","Package":"github.com/prashantv/faket","Test":"TestCmp_Success"}
 {"Time":"2022-06-11T00:00:00.0Z","Action":"output","Package":"github.com/prashantv/faket","Test":"TestCmp_Success","Output":"=== RUN   TestCmp_Success\n"}
 {"Time":"2022-06-11T00:00:00.0Z","Action":"output","Package":"github.com/prashantv/faket","Test":"TestCmp_Success","Output":"    integration_test.go:20: log1\n"}
