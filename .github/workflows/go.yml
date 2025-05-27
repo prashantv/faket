@@ -20,9 +20,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-    - uses: jdx/mise-action@v2
-      with:
-        cache_key_prefix: mise-v0-${{ matrix.mise-env }}
+    - uses: jdx/mise-action@13abe502c30c1559a5c37dff303831bab82c9402 # v2.2.3
 
     - name: Set up Go
       uses: actions/setup-go@v5
@@ -60,8 +58,7 @@ jobs:
       MISE_ENV: stable
     steps:
     - uses: actions/checkout@v4
-    - uses: jdx/mise-action@v2
-      with:
-        cache_key_prefix: mise-v0-stable
+    - uses: jdx/mise-action@13abe502c30c1559a5c37dff303831bab82c9402 # v2.2.3
+
     - name: lint
       run: mise run lint
