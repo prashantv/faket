@@ -106,12 +106,12 @@
 {"Time":"2022-06-11T00:00:00.0Z","Action":"output","Package":"github.com/prashantv/faket","Test":"TestCmp_NestedCleanup/always_nest_with_skips","Output":"    integration_test.go:207: defer cleanup 2\n"}
 {"Time":"2022-06-11T00:00:00.0Z","Action":"output","Package":"github.com/prashantv/faket","Test":"TestCmp_NestedCleanup/always_nest_with_skips","Output":"    integration_test.go:201: nested cleanup 2\n"}
 {"Time":"2022-06-11T00:00:00.0Z","Action":"output","Package":"github.com/prashantv/faket","Test":"TestCmp_NestedCleanup/always_nest_with_skips","Output":"    integration_test.go:204: skip in nested cleanup 2\n"}
-{"Time":"2022-06-11T00:00:00.0Z","Action":"output","Package":"github.com/prashantv/faket","Test":"TestCmp_NestedCleanup/always_nest_with_skips","Output":"    panic.go:629: defer nested cleanup 2\n"}
+{"Time":"2022-06-11T00:00:00.0Z","Action":"output","Package":"github.com/prashantv/faket","Test":"TestCmp_NestedCleanup/always_nest_with_skips","Output":"    panic.go:636: defer nested cleanup 2\n"}
 {"Time":"2022-06-11T00:00:00.0Z","Action":"output","Package":"github.com/prashantv/faket","Test":"TestCmp_NestedCleanup/always_nest_with_skips","Output":"    integration_test.go:193: cleanup 1\n"}
 {"Time":"2022-06-11T00:00:00.0Z","Action":"output","Package":"github.com/prashantv/faket","Test":"TestCmp_NestedCleanup/always_nest_with_skips","Output":"    integration_test.go:207: defer cleanup 1\n"}
 {"Time":"2022-06-11T00:00:00.0Z","Action":"output","Package":"github.com/prashantv/faket","Test":"TestCmp_NestedCleanup/always_nest_with_skips","Output":"    integration_test.go:201: nested cleanup 1\n"}
 {"Time":"2022-06-11T00:00:00.0Z","Action":"output","Package":"github.com/prashantv/faket","Test":"TestCmp_NestedCleanup/always_nest_with_skips","Output":"    integration_test.go:204: skip in nested cleanup 1\n"}
-{"Time":"2022-06-11T00:00:00.0Z","Action":"output","Package":"github.com/prashantv/faket","Test":"TestCmp_NestedCleanup/always_nest_with_skips","Output":"    panic.go:629: defer nested cleanup 1\n"}
+{"Time":"2022-06-11T00:00:00.0Z","Action":"output","Package":"github.com/prashantv/faket","Test":"TestCmp_NestedCleanup/always_nest_with_skips","Output":"    panic.go:636: defer nested cleanup 1\n"}
 {"Time":"2022-06-11T00:00:00.0Z","Action":"run","Package":"github.com/prashantv/faket","Test":"TestCmp_NestedCleanup/mix_nesting_and_skips"}
 {"Time":"2022-06-11T00:00:00.0Z","Action":"output","Package":"github.com/prashantv/faket","Test":"TestCmp_NestedCleanup/mix_nesting_and_skips","Output":"=== RUN   TestCmp_NestedCleanup/mix_nesting_and_skips\n"}
 {"Time":"2022-06-11T00:00:00.0Z","Action":"output","Package":"github.com/prashantv/faket","Test":"TestCmp_NestedCleanup/mix_nesting_and_skips","Output":"    integration_test.go:187: log 1\n"}
@@ -126,7 +126,7 @@
 {"Time":"2022-06-11T00:00:00.0Z","Action":"output","Package":"github.com/prashantv/faket","Test":"TestCmp_NestedCleanup/mix_nesting_and_skips","Output":"    integration_test.go:207: defer cleanup 1\n"}
 {"Time":"2022-06-11T00:00:00.0Z","Action":"output","Package":"github.com/prashantv/faket","Test":"TestCmp_NestedCleanup/mix_nesting_and_skips","Output":"    integration_test.go:201: nested cleanup 1\n"}
 {"Time":"2022-06-11T00:00:00.0Z","Action":"output","Package":"github.com/prashantv/faket","Test":"TestCmp_NestedCleanup/mix_nesting_and_skips","Output":"    integration_test.go:204: skip in nested cleanup 1\n"}
-{"Time":"2022-06-11T00:00:00.0Z","Action":"output","Package":"github.com/prashantv/faket","Test":"TestCmp_NestedCleanup/mix_nesting_and_skips","Output":"    panic.go:629: defer nested cleanup 1\n"}
+{"Time":"2022-06-11T00:00:00.0Z","Action":"output","Package":"github.com/prashantv/faket","Test":"TestCmp_NestedCleanup/mix_nesting_and_skips","Output":"    panic.go:636: defer nested cleanup 1\n"}
 {"Time":"2022-06-11T00:00:00.0Z","Action":"output","Package":"github.com/prashantv/faket","Test":"TestCmp_NestedCleanup","Output":"--- PASS: TestCmp_NestedCleanup (0.01s)\n"}
 {"Time":"2022-06-11T00:00:00.0Z","Action":"output","Package":"github.com/prashantv/faket","Test":"TestCmp_NestedCleanup/always_nest_without_skip","Output":"    --- PASS: TestCmp_NestedCleanup/always_nest_without_skip (0.01s)\n"}
 {"Time":"2022-06-11T00:00:00.0Z","Action":"pass","Package":"github.com/prashantv/faket","Test":"TestCmp_NestedCleanup/always_nest_without_skip","Elapsed":0}
